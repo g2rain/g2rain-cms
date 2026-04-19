@@ -1,0 +1,420 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.g2rain.cms.dao.ChannelDao">
+    <!-- 通用结果集映射（包含所有字段：主键+基础字段+业务字段） -->
+    <resultMap id="BaseResultMap" type="com.g2rain.cms.dao.po.ChannelPo">
+        <!-- 主键字段 -->
+        <id column="id" property="id" jdbcType="BIGINT"/>
+        <!-- 基础字段（createTime、updateTime） -->
+        <result column="create_time" property="createTime" jdbcType="TIMESTAMP"/>
+        <result column="update_time" property="updateTime" jdbcType="TIMESTAMP"/>
+        <!-- 业务字段（其他自定义字段） -->
+        <result column="organ_id" property="organId" jdbcType="BIGINT"/>
+        <result column="space_id" property="spaceId" jdbcType="BIGINT"/>
+        <result column="site_id" property="siteId" jdbcType="BIGINT"/>
+        <result column="parent_id" property="parentId" jdbcType="BIGINT"/>
+        <result column="channel_name" property="channelName" jdbcType="VARCHAR"/>
+        <result column="channel_code" property="channelCode" jdbcType="VARCHAR"/>
+        <result column="channel_type" property="channelType" jdbcType="VARCHAR"/>
+        <result column="path" property="path" jdbcType="VARCHAR"/>
+        <result column="category_id" property="categoryId" jdbcType="BIGINT"/>
+        <result column="page_id" property="pageId" jdbcType="BIGINT"/>
+        <result column="link_url" property="linkUrl" jdbcType="VARCHAR"/>
+        <result column="sort_order" property="sortOrder" jdbcType="INTEGER"/>
+        <result column="visible" property="visible" jdbcType="TINYINT"/>
+        <result column="status" property="status" jdbcType="VARCHAR"/>
+        <!-- deleteFlag字段（如果存在） -->
+        <result column="delete_flag" property="deleteFlag" jdbcType="TINYINT"/>
+        <!-- version字段（如果存在） -->
+        <result column="version" property="version" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 定义可复用排序方向片段 -->
+    <sql id="directionClause">
+        <choose>
+            <when test="item.direction == 'DESC'">DESC</when>
+            <otherwise>ASC</otherwise>
+        </choose>
+    </sql>
+
+    <!-- 可复用的动态排序 SQL 片段 -->
+    <sql id="dynamicOrderBy">
+        <trim prefix="ORDER BY" suffixOverrides=",">
+            <foreach collection="safeSorts" item="item" separator=",">
+                <choose>
+                    <when test="item.column == 'id'">
+                        id
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'createTime'">
+                        create_time
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'updateTime'">
+                        update_time
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'organId'">
+                        organ_id
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'spaceId'">
+                        space_id
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'siteId'">
+                        site_id
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'parentId'">
+                        parent_id
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'channelName'">
+                        channel_name
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'channelCode'">
+                        channel_code
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'channelType'">
+                        channel_type
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'path'">
+                        path
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'categoryId'">
+                        category_id
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'pageId'">
+                        page_id
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'linkUrl'">
+                        link_url
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'sortOrder'">
+                        sort_order
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'visible'">
+                        visible
+                        <include refid="directionClause"/>
+                    </when>
+                    <when test="item.column == 'status'">
+                        status
+                        <include refid="directionClause"/>
+                    </when>
+                </choose>
+            </foreach>
+        </trim>
+    </sql>
+
+    <!-- 插入单条记录 -->
+    <insert id="insert" parameterType="com.g2rain.cms.dao.po.ChannelPo">
+        INSERT INTO channel (
+        <!-- 主键字段（自增主键不包含在插入语句中） -->
+        id,
+        <!-- 基础字段 -->
+        create_time, update_time,
+        <!-- 业务字段 -->
+        organ_id, space_id, site_id, parent_id, channel_name, channel_code, channel_type, path, category_id, page_id, link_url, sort_order, visible, status,
+        <!-- deleteFlag字段（如果存在） -->
+        delete_flag,
+        <!-- version字段（如果存在） -->
+        version
+        ) VALUES (
+        <!-- 主键值（自增主键不包含） -->
+        #{id, jdbcType=BIGINT},
+        <!-- 基础字段值 -->
+        #{createTime, jdbcType=TIMESTAMP}, #{updateTime, jdbcType=TIMESTAMP},
+        <!-- 业务字段值 -->
+        #{organId, jdbcType=BIGINT}, #{spaceId, jdbcType=BIGINT}, #{siteId, jdbcType=BIGINT}, #{parentId, jdbcType=BIGINT}, #{channelName, jdbcType=VARCHAR}, #{channelCode, jdbcType=VARCHAR}, #{channelType, jdbcType=VARCHAR}, #{path, jdbcType=VARCHAR}, #{categoryId, jdbcType=BIGINT}, #{pageId, jdbcType=BIGINT}, #{linkUrl, jdbcType=VARCHAR}, #{sortOrder, jdbcType=INTEGER}, #{visible, jdbcType=TINYINT}, #{status, jdbcType=VARCHAR},
+        <!-- deleteFlag字段值（如果存在，设置默认值为0） -->
+        0,
+        <!-- version字段值（如果存在，设置默认值为0） -->
+        0
+        )
+    </insert>
+
+    <!-- 批量插入记录 -->
+    <insert id="insertMultiple" parameterType="java.util.List">
+        INSERT INTO channel (
+        <!-- 主键字段（自增主键不包含） -->
+        id,
+        <!-- 基础字段 -->
+        create_time, update_time,
+        <!-- 业务字段 -->
+        organ_id, space_id, site_id, parent_id, channel_name, channel_code, channel_type, path, category_id, page_id, link_url, sort_order, visible, status,
+        <!-- deleteFlag字段（如果存在） -->
+        delete_flag,
+        <!-- version字段（如果存在） -->
+        version
+        ) VALUES
+        <foreach collection="list" item="item" separator=",">
+            (
+            <!-- 主键值（自增主键不包含） -->
+            #{item.id, jdbcType=BIGINT},
+            <!-- 基础字段值 -->
+            #{item.createTime, jdbcType=TIMESTAMP}, #{item.updateTime, jdbcType=TIMESTAMP},
+            <!-- 业务字段值 -->
+            #{item.organId, jdbcType=BIGINT}, #{item.spaceId, jdbcType=BIGINT}, #{item.siteId, jdbcType=BIGINT}, #{item.parentId, jdbcType=BIGINT}, #{item.channelName, jdbcType=VARCHAR}, #{item.channelCode, jdbcType=VARCHAR}, #{item.channelType, jdbcType=VARCHAR}, #{item.path, jdbcType=VARCHAR}, #{item.categoryId, jdbcType=BIGINT}, #{item.pageId, jdbcType=BIGINT}, #{item.linkUrl, jdbcType=VARCHAR}, #{item.sortOrder, jdbcType=INTEGER}, #{item.visible, jdbcType=TINYINT}, #{item.status, jdbcType=VARCHAR},
+            <!-- deleteFlag字段值（如果存在，设置默认值为0） -->
+            0,
+            <!-- version字段值（如果存在，设置默认值为0） -->
+            0
+            )
+        </foreach>
+    </insert>
+
+    <!-- 根据ID更新记录（包含基础字段和业务字段） -->
+    <update id="update" parameterType="com.g2rain.cms.dao.po.ChannelPo">
+        UPDATE channel
+        <set>
+            <!-- 基础字段更新（排除version，version单独处理） -->
+            <if test="updateTime != null">
+                update_time = #{updateTime, jdbcType=TIMESTAMP},
+            </if>
+            <!-- 业务字段更新 -->
+            <if test="organId != null">
+                organ_id = #{organId, jdbcType=BIGINT},
+            </if>
+            <if test="spaceId != null">
+                space_id = #{spaceId, jdbcType=BIGINT},
+            </if>
+            <if test="siteId != null">
+                site_id = #{siteId, jdbcType=BIGINT},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId, jdbcType=BIGINT},
+            </if>
+            <if test="channelName != null">
+                channel_name = #{channelName, jdbcType=VARCHAR},
+            </if>
+            <if test="channelCode != null">
+                channel_code = #{channelCode, jdbcType=VARCHAR},
+            </if>
+            <if test="channelType != null">
+                channel_type = #{channelType, jdbcType=VARCHAR},
+            </if>
+            <if test="path != null">
+                path = #{path, jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId, jdbcType=BIGINT},
+            </if>
+            <if test="pageId != null">
+                page_id = #{pageId, jdbcType=BIGINT},
+            </if>
+            <if test="linkUrl != null">
+                link_url = #{linkUrl, jdbcType=VARCHAR},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder, jdbcType=INTEGER},
+            </if>
+            <if test="visible != null">
+                visible = #{visible, jdbcType=TINYINT},
+            </if>
+            <if test="status != null">
+                status = #{status, jdbcType=VARCHAR},
+            </if>
+            <!-- version字段更新（如果存在，版本号自增） -->
+            version = version + 1
+        </set>
+        WHERE id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据ID和Version更新记录（乐观锁更新，包含基础字段和业务字段） -->
+    <update id="updateByVersion" parameterType="com.g2rain.cms.dao.po.ChannelPo">
+        UPDATE channel
+        <set>
+            <!-- 基础字段更新（排除version，version单独处理） -->
+            <if test="updateTime != null">
+                update_time = #{updateTime, jdbcType=TIMESTAMP},
+            </if>
+            <!-- 业务字段更新 -->
+            <if test="organId != null">
+                organ_id = #{organId, jdbcType=BIGINT},
+            </if>
+            <if test="spaceId != null">
+                space_id = #{spaceId, jdbcType=BIGINT},
+            </if>
+            <if test="siteId != null">
+                site_id = #{siteId, jdbcType=BIGINT},
+            </if>
+            <if test="parentId != null">
+                parent_id = #{parentId, jdbcType=BIGINT},
+            </if>
+            <if test="channelName != null">
+                channel_name = #{channelName, jdbcType=VARCHAR},
+            </if>
+            <if test="channelCode != null">
+                channel_code = #{channelCode, jdbcType=VARCHAR},
+            </if>
+            <if test="channelType != null">
+                channel_type = #{channelType, jdbcType=VARCHAR},
+            </if>
+            <if test="path != null">
+                path = #{path, jdbcType=VARCHAR},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId, jdbcType=BIGINT},
+            </if>
+            <if test="pageId != null">
+                page_id = #{pageId, jdbcType=BIGINT},
+            </if>
+            <if test="linkUrl != null">
+                link_url = #{linkUrl, jdbcType=VARCHAR},
+            </if>
+            <if test="sortOrder != null">
+                sort_order = #{sortOrder, jdbcType=INTEGER},
+            </if>
+            <if test="visible != null">
+                visible = #{visible, jdbcType=TINYINT},
+            </if>
+            <if test="status != null">
+                status = #{status, jdbcType=VARCHAR},
+            </if>
+            <!-- version字段更新（乐观锁版本号自增） -->
+            version = version + 1
+        </set>
+        WHERE id = #{id, jdbcType=BIGINT}
+        AND version = #{version, jdbcType=INTEGER}
+    </update>
+
+    <!-- 根据ID删除记录（逻辑删除：将delete_flag设置为true） -->
+    <update id="delete" parameterType="Long">
+        UPDATE channel
+        <set>
+            delete_flag = 1, version = version + 1
+        </set>
+        WHERE id = #{id, jdbcType=BIGINT}
+        <!-- 只删除未删除的记录 -->
+        AND (delete_flag = 0 OR delete_flag IS NULL)
+    </update>
+
+    <!-- 根据ID查询记录（查询所有字段） -->
+    <select id="selectById" parameterType="Long" resultMap="BaseResultMap">
+        SELECT
+        <!-- 主键字段 -->
+        id,
+        <!-- 基础字段 -->
+        create_time, update_time,
+        <!-- 业务字段 -->
+        organ_id, space_id, site_id, parent_id, channel_name, channel_code, channel_type, path, category_id, page_id, link_url, sort_order, visible, status,
+        <!-- deleteFlag字段（如果存在） -->
+        delete_flag,
+        <!-- version字段（如果存在） -->
+        version
+        FROM channel
+        WHERE id = #{id, jdbcType=BIGINT}
+        <!-- 过滤已删除的记录 -->
+        AND (delete_flag = 0 OR delete_flag IS NULL)
+    </select>
+
+    <!-- 根据SelectDto条件查询列表 -->
+    <select id="selectList" parameterType="com.g2rain.cms.dto.ChannelSelectDto" resultMap="BaseResultMap">
+        SELECT
+        <!-- 主键字段 -->
+        id,
+        <!-- 基础字段 -->
+        create_time, update_time,
+        <!-- 业务字段 -->
+        organ_id, space_id, site_id, parent_id, channel_name, channel_code, channel_type, path, category_id, page_id, link_url, sort_order, visible, status,
+        <!-- deleteFlag字段（如果存在） -->
+        delete_flag,
+        <!-- version字段（如果存在） -->
+        version
+        FROM channel
+        <where>
+            <!-- 主键筛选 -->
+            <if test="id != null">
+                AND id = #{id, jdbcType=BIGINT}
+            </if>
+            <if test="ids != null and ids.size() > 0">
+                AND id IN
+                <foreach collection="ids" item="item" open="(" separator="," close=")">
+                    #{item, jdbcType=BIGINT}
+                </foreach>
+            </if>
+            <!-- 基础字段筛选（createTime和updateTime时间筛选） -->
+            <if test="createTime != null">
+                <if test="createTime[0] != '' and (createTime.size() lt 2 or createTime[1] == '')">
+                    AND create_time >= #{createTime[0], jdbcType=TIMESTAMP}
+                </if>
+                <if test="createTime.size() >= 2 and createTime[0] == '' and createTime[1] != ''">
+                    AND create_time &lt;= #{createTime[1], jdbcType=TIMESTAMP}
+                </if>
+                <if test="createTime.size() >= 2 and createTime[0] != '' and createTime[1] != ''">
+                    AND create_time BETWEEN #{createTime[0], jdbcType=TIMESTAMP}
+                    AND #{createTime[1], jdbcType=TIMESTAMP}
+                </if>
+            </if>
+            <if test="updateTime != null">
+                <if test="updateTime[0] != '' and (updateTime.size() lt 2 or updateTime[1] == '')">
+                    AND update_time >= #{updateTime[0], jdbcType=TIMESTAMP}
+                </if>
+                <if test="updateTime.size() >= 2 and updateTime[0] == '' and updateTime[1] != ''">
+                    AND update_time &lt;= #{updateTime[1], jdbcType=TIMESTAMP}
+                </if>
+                <if test="updateTime.size() >= 2 and updateTime[0] != '' and updateTime[1] != ''">
+                    AND update_time BETWEEN #{updateTime[0], jdbcType=TIMESTAMP}
+                    AND #{updateTime[1], jdbcType=TIMESTAMP}
+                </if>
+            </if>
+            <!-- 业务字段筛选 -->
+            <if test="organId != null">
+                AND organ_id = #{organId, jdbcType=BIGINT}
+            </if>
+            <if test="spaceId != null">
+                AND space_id = #{spaceId, jdbcType=BIGINT}
+            </if>
+            <if test="siteId != null">
+                AND site_id = #{siteId, jdbcType=BIGINT}
+            </if>
+            <if test="parentId != null">
+                AND parent_id = #{parentId, jdbcType=BIGINT}
+            </if>
+            <if test="channelName != null">
+                AND channel_name = #{channelName, jdbcType=VARCHAR}
+            </if>
+            <if test="channelCode != null">
+                AND channel_code = #{channelCode, jdbcType=VARCHAR}
+            </if>
+            <if test="channelType != null">
+                AND channel_type = #{channelType, jdbcType=VARCHAR}
+            </if>
+            <if test="path != null">
+                AND path = #{path, jdbcType=VARCHAR}
+            </if>
+            <if test="categoryId != null">
+                AND category_id = #{categoryId, jdbcType=BIGINT}
+            </if>
+            <if test="pageId != null">
+                AND page_id = #{pageId, jdbcType=BIGINT}
+            </if>
+            <if test="linkUrl != null">
+                AND link_url = #{linkUrl, jdbcType=VARCHAR}
+            </if>
+            <if test="sortOrder != null">
+                AND sort_order = #{sortOrder, jdbcType=INTEGER}
+            </if>
+            <if test="visible != null">
+                AND visible = #{visible, jdbcType=TINYINT}
+            </if>
+            <if test="status != null">
+                AND status = #{status, jdbcType=VARCHAR}
+            </if>
+            <!-- 过滤已删除的记录 -->
+            AND (delete_flag = 0 OR delete_flag IS NULL)
+        </where>
+        <include refid="dynamicOrderBy"/>
+    </select>
+</mapper>

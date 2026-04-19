@@ -1,0 +1,75 @@
+server:
+  port: ${SERVER_PORT:8080}
+
+spring:
+  threads:
+    virtual:
+      enabled: true
+  application:
+    name: g2rain-cms
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  cloud:
+    nacos:
+      server-addr: ${NACOS_SERVER_ADDR:127.0.0.1:8848}
+      discovery:
+        username: ${SPRING_CLOUD_NACOS_DISCOVERY_USERNAME:nacos}
+        password: ${SPRING_CLOUD_NACOS_DISCOVERY_PASSWORD:g2rain_nacos}
+        namespace: ${SPRING_CLOUD_NACOS_DISCOVERY_NAMESPACE:dev}
+        group: g2rain
+        service: ${spring.application.name}
+        heart-beat-interval: 5000
+        heart-beat-timeout: 15000
+      config:
+        username: ${SPRING_CLOUD_NACOS_CONFIG_USERNAME:nacos}
+        password: ${SPRING_CLOUD_NACOS_CONFIG_PASSWORD:g2rain_nacos}
+        namespace: ${SPRING_CLOUD_NACOS_CONFIG_NAMESPACE:dev}
+        group: ${spring.application.name}
+        file-extension: yaml
+        refresh-enabled: true
+        max-retry: 3
+        timeout: 5000
+  config:
+    import:
+      - optional:nacos:${spring.application.name}.yml?group=${spring.application.name}
+
+## Mybatis
+mybatis:
+  mapper-locations: classpath:/mybatis/mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+    jdbc-type-for-null: NULL
+
+g2rain:
+  web:
+    login-guard-interceptor-enabled: false
+    identity-param-injector-enabled: false
+    global-exception-filter-use-custom-json: true
+    enable-result-mixin-filter: true
+  data:
+    isolation:
+      enabled: true
+
+logging:
+  level:
+    com.g2rain.cms.dao: DEBUG
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - health
+          - info
