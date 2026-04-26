@@ -6,6 +6,7 @@ import com.g2rain.common.model.Result;
 import com.g2rain.cms.api.SpaceApi;
 import com.g2rain.cms.dto.SpaceDto;
 import com.g2rain.cms.dto.SpaceSelectDto;
+import com.g2rain.cms.dto.SpaceUpdateStatusDto;
 import com.g2rain.cms.service.SpaceService;
 import com.g2rain.cms.vo.SpaceVo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +52,12 @@ public class SpaceController implements SpaceApi {
     @Operation(summary = "内容空间保存")
     public Result<Long> save(@RequestBody SpaceDto dto) {
         return Result.success(spaceService.save(dto));
+    }
+    
+    @PostMapping("/update_status")
+    @Operation(summary = "内容空间状态变更")
+    public Result<Integer> updateStatus(@RequestBody SpaceUpdateStatusDto dto) {
+        return Result.success(spaceService.updateStatus(dto));
     }
 
     @DeleteMapping("/{id}")

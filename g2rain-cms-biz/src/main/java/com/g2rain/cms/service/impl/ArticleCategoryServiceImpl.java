@@ -11,6 +11,7 @@ import com.g2rain.cms.dao.ArticleCategoryDao;
 import com.g2rain.cms.dao.po.ArticleCategoryPo;
 import com.g2rain.cms.dto.ArticleCategoryDto;
 import com.g2rain.cms.dto.ArticleCategorySelectDto;
+import com.g2rain.cms.dto.ArticleCategoryUpdateStatusDto;
 import com.g2rain.cms.service.ArticleCategoryService;
 import com.g2rain.cms.vo.ArticleCategoryVo;
 import com.g2rain.mybatis.pagination.PageContext;
@@ -87,6 +88,21 @@ public class ArticleCategoryServiceImpl implements ArticleCategoryService {
         }
 
         return entity.getId();
+    }
+
+    @Override
+    public int updateStatus(ArticleCategoryUpdateStatusDto dto) {
+        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
+            throw new IllegalArgumentException("articleCategory updateStatus requires id and status");
+        }
+
+        ArticleCategoryPo entity = new ArticleCategoryPo();
+        entity.setId(dto.getId());
+        entity.setStatus(dto.getStatus());
+        entity.setUpdateTime(Moments.now());
+        int success = articleCategoryDao.update(entity);
+        Asserts.greaterThan(success, 0, SystemErrorCode.UPDATE_DATA_ERROR, dto.getId());
+        return success;
     }
 
     @Override

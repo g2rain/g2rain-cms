@@ -6,8 +6,11 @@ import com.g2rain.common.model.Result;
 import com.g2rain.cms.api.ArticleCategoryApi;
 import com.g2rain.cms.dto.ArticleCategoryDto;
 import com.g2rain.cms.dto.ArticleCategorySelectDto;
+import com.g2rain.cms.dto.ArticleCategoryUpdateStatusDto;
 import com.g2rain.cms.service.ArticleCategoryService;
 import com.g2rain.cms.vo.ArticleCategoryVo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,6 +27,7 @@ import java.util.List;
  *
  * @author G2rain Generator
  */
+@Tag(name = "文章分类")
 @RestController
 @RequestMapping("/article_category")
 public class ArticleCategoryController implements ArticleCategoryApi {
@@ -44,6 +48,13 @@ public class ArticleCategoryController implements ArticleCategoryApi {
     @PostMapping("/save")
     public Result<Long> save(@RequestBody ArticleCategoryDto dto) {
         return Result.success(articleCategoryService.save(dto));
+    }
+
+    
+    @PostMapping("/update_status")
+    @Operation(summary = "文章分类状态变更")
+    public Result<Integer> updateStatus(@RequestBody ArticleCategoryUpdateStatusDto dto) {
+        return Result.success(articleCategoryService.updateStatus(dto));
     }
 
     @DeleteMapping("/{id}")
