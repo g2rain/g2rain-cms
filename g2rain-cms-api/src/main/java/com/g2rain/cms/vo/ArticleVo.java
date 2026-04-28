@@ -99,12 +99,6 @@ public class ArticleVo extends BaseVo {
     private LocalDateTime publishTime;
 
     /**
-     * 内容
-     */
-    @Schema(description = "内容")
-    private String content;
-
-    /**
      * 标签列表
      */
     @Schema(description = "标签列表")

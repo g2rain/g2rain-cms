@@ -4,6 +4,7 @@ import com.g2rain.common.model.PageData;
 import com.g2rain.common.model.PageSelectListDto;
 import com.g2rain.cms.dto.ArticleDto;
 import com.g2rain.cms.dto.ArticleSelectDto;
+import com.g2rain.cms.vo.ArticleDetailVo;
 import com.g2rain.cms.vo.ArticleVo;
 
 import java.util.List;
@@ -31,6 +32,14 @@ public interface ArticleService {
      * @return 分页VO数据
      */
     PageData<ArticleVo> selectPage(PageSelectListDto<ArticleSelectDto> selectDto);
+
+    /**
+     * 根据ID查询文章详情（包含内容）
+     *
+     * @param id 主键ID
+     * @return 详情VO
+     */
+    ArticleDetailVo detail(Long id);
 
     /**
      * 新增或更新数据

@@ -7,6 +7,7 @@ import com.g2rain.cms.api.ArticleApi;
 import com.g2rain.cms.dto.ArticleDto;
 import com.g2rain.cms.dto.ArticleSelectDto;
 import com.g2rain.cms.service.ArticleService;
+import com.g2rain.cms.vo.ArticleDetailVo;
 import com.g2rain.cms.vo.ArticleVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -45,6 +46,12 @@ public class ArticleController implements ArticleApi {
     @Operation(summary = "文章分页查询")
     public Result<PageData<ArticleVo>> selectPage(PageSelectListDto<ArticleSelectDto> selectDto) {
         return Result.successPage(articleService.selectPage(selectDto));
+    }
+
+    @Override
+    @Operation(summary = "文章详情查询")
+    public Result<ArticleDetailVo> detail(Long id) {
+        return Result.success(articleService.detail(id));
     }
 
     @PostMapping("/save")
