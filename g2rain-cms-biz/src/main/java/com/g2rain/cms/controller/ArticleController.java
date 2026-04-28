@@ -50,7 +50,7 @@ public class ArticleController implements ArticleApi {
 
     @Override
     @Operation(summary = "文章详情查询")
-    public Result<ArticleDetailVo> detail(Long id) {
+    public Result<ArticleDetailVo> detail(@PathVariable("id") Long id) {
         return Result.success(articleService.detail(id));
     }
 

@@ -9,7 +9,7 @@ import com.g2rain.cms.vo.ArticleVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -49,6 +49,6 @@ public interface ArticleApi {
      * @return 文章详情
      */
     @Operation(summary = "文章详情查询")
-    @GetMapping("/detail")
-    Result<ArticleDetailVo> detail(@Parameter(description = "主键") @RequestParam("id") Long id);
+    @GetMapping("/{id}")
+    Result<ArticleDetailVo> detail(@Parameter(description = "主键") @PathVariable("id") Long id);
 }
