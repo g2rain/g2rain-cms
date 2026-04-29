@@ -16,6 +16,8 @@ import com.g2rain.cms.service.ArticleService;
 import com.g2rain.cms.service.TagService;
 import com.g2rain.cms.vo.ArticleDetailVo;
 import com.g2rain.cms.vo.ArticleVo;
+import com.g2rain.common.web.PrincipalContext;
+import com.g2rain.common.web.PrincipalContextHolder;
 import com.g2rain.mybatis.pagination.PageContext;
 import com.g2rain.mybatis.pagination.model.Page;
 import jakarta.annotation.Resource;
@@ -129,6 +131,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (Objects.isNull(id) || id == 0) {
             // 新增：使用IdGenerator生成主键
             entity.setId(idGenerator.generateId());
+            PrincipalContext context = PrincipalContextHolder.get();
+            entity.setSourceApplicationId(context.getApplicationId());
             LocalDateTime now = Moments.now();
             entity.setUpdateTime(now);
             entity.setCreateTime(now);
