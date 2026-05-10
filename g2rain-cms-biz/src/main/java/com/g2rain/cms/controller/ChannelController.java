@@ -6,6 +6,7 @@ import com.g2rain.common.model.Result;
 import com.g2rain.cms.api.ChannelApi;
 import com.g2rain.cms.dto.ChannelDto;
 import com.g2rain.cms.dto.ChannelSelectDto;
+import com.g2rain.cms.dto.ChannelUpdateStatusDto;
 import com.g2rain.cms.service.ChannelService;
 import com.g2rain.cms.vo.ChannelVo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +52,12 @@ public class ChannelController implements ChannelApi {
     @Operation(summary = "栏目保存")
     public Result<Long> save(@RequestBody ChannelDto dto) {
         return Result.success(channelService.save(dto));
+    }
+
+    @PostMapping("/update_status")
+    @Operation(summary = "栏目状态变更")
+    public Result<Integer> updateStatus(@RequestBody ChannelUpdateStatusDto dto) {
+        return Result.success(channelService.updateStatus(dto));
     }
 
     @DeleteMapping("/{id}")

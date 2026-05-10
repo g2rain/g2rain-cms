@@ -6,8 +6,10 @@ import com.g2rain.common.model.Result;
 import com.g2rain.cms.api.WebSiteApi;
 import com.g2rain.cms.dto.WebSiteDto;
 import com.g2rain.cms.dto.WebSiteSelectDto;
+import com.g2rain.cms.dto.WebSiteUpdateStatusDto;
 import com.g2rain.cms.service.WebSiteService;
 import com.g2rain.cms.vo.WebSiteVo;
+import io.swagger.v3.oas.annotations.Operation;
 import jakarta.annotation.Resource;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,6 +46,12 @@ public class WebSiteController implements WebSiteApi {
     @PostMapping("/save")
     public Result<Long> save(@RequestBody WebSiteDto dto) {
         return Result.success(webSiteService.save(dto));
+    }
+
+    @PostMapping("/update_status")
+    @Operation(summary = "站点状态变更")
+    public Result<Integer> updateStatus(@RequestBody WebSiteUpdateStatusDto dto) {
+        return Result.success(webSiteService.updateStatus(dto));
     }
 
     @DeleteMapping("/{id}")

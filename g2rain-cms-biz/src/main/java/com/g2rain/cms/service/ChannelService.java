@@ -4,6 +4,7 @@ import com.g2rain.common.model.PageData;
 import com.g2rain.common.model.PageSelectListDto;
 import com.g2rain.cms.dto.ChannelDto;
 import com.g2rain.cms.dto.ChannelSelectDto;
+import com.g2rain.cms.dto.ChannelUpdateStatusDto;
 import com.g2rain.cms.vo.ChannelVo;
 
 import java.util.List;
@@ -39,6 +40,14 @@ public interface ChannelService {
      * @return 操作结果（影响行数）
      */
     Long save(ChannelDto dto);
+
+    /**
+     * 状态变更
+     *
+     * @param dto 主键与目标状态
+     * @return 影响行数
+     */
+    int updateStatus(ChannelUpdateStatusDto dto);
 
     /**
      * 根据ID删除数据

@@ -6,6 +6,7 @@ import com.g2rain.common.model.Result;
 import com.g2rain.cms.api.PageApi;
 import com.g2rain.cms.dto.PageDto;
 import com.g2rain.cms.dto.PageSelectDto;
+import com.g2rain.cms.dto.PageUpdateStatusDto;
 import com.g2rain.cms.service.PageService;
 import com.g2rain.cms.vo.PageVo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +52,12 @@ public class PageController implements PageApi {
     @Operation(summary = "页面保存")
     public Result<Long> save(@RequestBody PageDto dto) {
         return Result.success(pageService.save(dto));
+    }
+
+    @PostMapping("/update_status")
+    @Operation(summary = "页面状态变更")
+    public Result<Integer> updateStatus(@RequestBody PageUpdateStatusDto dto) {
+        return Result.success(pageService.updateStatus(dto));
     }
 
     @DeleteMapping("/{id}")
