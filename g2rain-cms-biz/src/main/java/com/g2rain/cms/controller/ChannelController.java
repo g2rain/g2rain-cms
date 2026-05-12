@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author G2rain Generator
  */
-@Tag(name = "栏目")
+@Tag(name = "栏目", description = "导航栏目：查询、保存与删除")
 @RestController
 @RequestMapping("/channel")
 public class ChannelController implements ChannelApi {
@@ -37,19 +37,19 @@ public class ChannelController implements ChannelApi {
     private ChannelService channelService;
 
     @Override
-    @Operation(summary = "栏目列表查询")
+    @Operation(summary = "查询栏目列表", description = "按查询条件筛选栏目，不分页返回列表")
     public Result<List<ChannelVo>> selectList(ChannelSelectDto selectDto) {
         return Result.success(channelService.selectList(selectDto));
     }
 
     @Override
-    @Operation(summary = "栏目分页查询")
+    @Operation(summary = "分页查询栏目", description = "按查询条件筛选栏目并分页，含总数与当前页数据")
     public Result<PageData<ChannelVo>> selectPage(PageSelectListDto<ChannelSelectDto> selectDto) {
         return Result.successPage(channelService.selectPage(selectDto));
     }
 
     @PostMapping("/save")
-    @Operation(summary = "栏目保存")
+    @Operation(summary = "新增或更新栏目", description = "根据请求体主键是否存在，新增或更新栏目信息")
     public Result<Long> save(@RequestBody ChannelDto dto) {
         return Result.success(channelService.save(dto));
     }
@@ -61,8 +61,8 @@ public class ChannelController implements ChannelApi {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "栏目删除")
-    public Result<Integer> delete(@Parameter(description = "主键") @PathVariable Long id) {
+    @Operation(summary = "删除栏目", description = "根据主键删除栏目记录")
+    public Result<Integer> delete(@Parameter(description = "栏目主键") @PathVariable Long id) {
         return Result.success(channelService.delete(id));
     }
 }

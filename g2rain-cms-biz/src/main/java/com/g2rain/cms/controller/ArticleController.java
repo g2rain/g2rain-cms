@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author G2rain Generator
  */
-@Tag(name = "文章")
+@Tag(name = "文章", description = "文章内容：查询、保存与删除")
 @RestController
 @RequestMapping("/article")
 public class ArticleController implements ArticleApi {
@@ -37,13 +37,13 @@ public class ArticleController implements ArticleApi {
     private ArticleService articleService;
 
     @Override
-    @Operation(summary = "文章列表查询")
+    @Operation(summary = "查询文章列表", description = "按查询条件筛选文章，不分页返回列表")
     public Result<List<ArticleVo>> selectList(ArticleSelectDto selectDto) {
         return Result.success(articleService.selectList(selectDto));
     }
 
     @Override
-    @Operation(summary = "文章分页查询")
+    @Operation(summary = "分页查询文章", description = "按查询条件筛选文章并分页，含总数与当前页数据")
     public Result<PageData<ArticleVo>> selectPage(PageSelectListDto<ArticleSelectDto> selectDto) {
         return Result.successPage(articleService.selectPage(selectDto));
     }
@@ -55,14 +55,14 @@ public class ArticleController implements ArticleApi {
     }
 
     @PostMapping("/save")
-    @Operation(summary = "文章保存")
+    @Operation(summary = "新增或更新文章", description = "根据请求体主键是否存在，新增或更新文章信息")
     public Result<Long> save(@RequestBody ArticleDto dto) {
         return Result.success(articleService.save(dto));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "文章删除")
-    public Result<Integer> delete(@Parameter(description = "主键") @PathVariable Long id) {
+    @Operation(summary = "删除文章", description = "根据主键删除文章记录")
+    public Result<Integer> delete(@Parameter(description = "文章主键") @PathVariable Long id) {
         return Result.success(articleService.delete(id));
     }
 }

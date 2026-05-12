@@ -28,7 +28,7 @@ import java.util.List;
  *
  * @author G2rain Generator
  */
-@Tag(name = "内容空间")
+@Tag(name = "内容空间", description = "内容空间（站点下的内容域）：查询、保存与删除")
 @RestController
 @RequestMapping("/space")
 public class SpaceController implements SpaceApi {
@@ -37,19 +37,19 @@ public class SpaceController implements SpaceApi {
     private SpaceService spaceService;
 
     @Override
-    @Operation(summary = "内容空间列表查询")
+    @Operation(summary = "查询内容空间列表", description = "按查询条件筛选内容空间，不分页返回列表")
     public Result<List<SpaceVo>> selectList(SpaceSelectDto selectDto) {
         return Result.success(spaceService.selectList(selectDto));
     }
 
     @Override
-    @Operation(summary = "内容空间分页查询")
+    @Operation(summary = "分页查询内容空间", description = "按查询条件筛选内容空间并分页，含总数与当前页数据")
     public Result<PageData<SpaceVo>> selectPage(PageSelectListDto<SpaceSelectDto> selectDto) {
         return Result.successPage(spaceService.selectPage(selectDto));
     }
 
     @PostMapping("/save")
-    @Operation(summary = "内容空间保存")
+    @Operation(summary = "新增或更新内容空间", description = "根据请求体主键是否存在，新增或更新内容空间信息")
     public Result<Long> save(@RequestBody SpaceDto dto) {
         return Result.success(spaceService.save(dto));
     }
@@ -61,8 +61,8 @@ public class SpaceController implements SpaceApi {
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "内容空间删除")
-    public Result<Integer> delete(@Parameter(description = "主键") @PathVariable Long id) {
+    @Operation(summary = "删除内容空间", description = "根据主键删除内容空间记录")
+    public Result<Integer> delete(@Parameter(description = "内容空间主键") @PathVariable Long id) {
         return Result.success(spaceService.delete(id));
     }
 }
