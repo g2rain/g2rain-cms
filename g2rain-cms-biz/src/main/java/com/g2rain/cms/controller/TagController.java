@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author G2rain Generator
  */
-@Tag(name = "标签")
+@Tag(name = "标签", description = "内容标签：列表、分页、按文章批量查询、保存与删除")
 @RestController
 @RequestMapping("/tag")
 public class TagController implements TagApi {
@@ -38,32 +38,32 @@ public class TagController implements TagApi {
     private TagService tagService;
 
     @Override
-    @Operation(summary = "标签列表查询")
+    @Operation(summary = "查询标签列表", description = "按查询条件筛选标签，不分页返回列表")
     public Result<List<TagVo>> selectList(TagSelectDto selectDto) {
         return Result.success(tagService.selectList(selectDto));
     }
 
     @Override
-    @Operation(summary = "标签分页查询")
+    @Operation(summary = "分页查询标签", description = "按查询条件筛选标签并分页，含总数与当前页数据")
     public Result<PageData<TagVo>> selectPage(PageSelectListDto<TagSelectDto> selectDto) {
         return Result.successPage(tagService.selectPage(selectDto));
     }
 
     @Override
-    @Operation(summary = "根据文章ID列表批量查询标签列表")
+    @Operation(summary = "按文章批量查询标签", description = "根据文章主键列表，返回每篇文章对应的标签列表映射")
     public Result<Map<Long, List<TagVo>>> selectTagsByArticleIds(@RequestBody TagSelectByArticleIdsDto request) {
         return Result.success(tagService.selectTagsByArticleIds(request));
     }
 
     @PostMapping("/save")
-    @Operation(summary = "标签保存")
+    @Operation(summary = "新增或更新标签", description = "根据请求体主键是否存在，新增或更新标签信息")
     public Result<Long> save(@RequestBody TagDto dto) {
         return Result.success(tagService.save(dto));
     }
 
     @DeleteMapping("/{id}")
-    @Operation(summary = "标签删除")
-    public Result<Integer> delete(@Parameter(description = "主键") @PathVariable Long id) {
+    @Operation(summary = "删除标签", description = "根据主键删除标签记录")
+    public Result<Integer> delete(@Parameter(description = "标签主键") @PathVariable Long id) {
         return Result.success(tagService.delete(id));
     }
 }

@@ -11,6 +11,7 @@ import com.g2rain.cms.dao.WebSiteDao;
 import com.g2rain.cms.dao.po.WebSitePo;
 import com.g2rain.cms.dto.WebSiteDto;
 import com.g2rain.cms.dto.WebSiteSelectDto;
+import com.g2rain.cms.dto.WebSiteUpdateStatusDto;
 import com.g2rain.cms.service.WebSiteService;
 import com.g2rain.cms.vo.WebSiteVo;
 import com.g2rain.mybatis.pagination.PageContext;
@@ -87,6 +88,21 @@ public class WebSiteServiceImpl implements WebSiteService {
         }
 
         return entity.getId();
+    }
+
+    @Override
+    public int updateStatus(WebSiteUpdateStatusDto dto) {
+        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
+            throw new IllegalArgumentException("webSite updateStatus requires id and status");
+        }
+
+        WebSitePo entity = new WebSitePo();
+        entity.setId(dto.getId());
+        entity.setStatus(dto.getStatus());
+        entity.setUpdateTime(Moments.now());
+        int success = webSiteDao.update(entity);
+        Asserts.greaterThan(success, 0, SystemErrorCode.UPDATE_DATA_ERROR, dto.getId());
+        return success;
     }
 
     @Override

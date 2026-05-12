@@ -4,6 +4,7 @@ import com.g2rain.common.model.PageData;
 import com.g2rain.common.model.PageSelectListDto;
 import com.g2rain.cms.dto.ArticleCategoryDto;
 import com.g2rain.cms.dto.ArticleCategorySelectDto;
+import com.g2rain.cms.dto.ArticleCategoryUpdateStatusDto;
 import com.g2rain.cms.vo.ArticleCategoryVo;
 
 import java.util.List;
@@ -39,6 +40,14 @@ public interface ArticleCategoryService {
      * @return 操作结果（影响行数）
      */
     Long save(ArticleCategoryDto dto);
+
+    /**
+     * 状态变更
+     *
+     * @param dto 需包含id与status
+     * @return 操作结果（影响行数）
+     */
+    int updateStatus(ArticleCategoryUpdateStatusDto dto);
 
     /**
      * 根据ID删除数据

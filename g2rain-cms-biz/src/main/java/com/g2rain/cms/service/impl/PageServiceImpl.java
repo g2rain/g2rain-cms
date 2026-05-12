@@ -11,6 +11,7 @@ import com.g2rain.cms.dao.PageDao;
 import com.g2rain.cms.dao.po.PagePo;
 import com.g2rain.cms.dto.PageDto;
 import com.g2rain.cms.dto.PageSelectDto;
+import com.g2rain.cms.dto.PageUpdateStatusDto;
 import com.g2rain.cms.service.PageService;
 import com.g2rain.cms.vo.PageVo;
 import com.g2rain.mybatis.pagination.PageContext;
@@ -87,6 +88,21 @@ public class PageServiceImpl implements PageService {
         }
 
         return entity.getId();
+    }
+
+    @Override
+    public int updateStatus(PageUpdateStatusDto dto) {
+        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
+            throw new IllegalArgumentException("page updateStatus requires id and status");
+        }
+
+        PagePo entity = new PagePo();
+        entity.setId(dto.getId());
+        entity.setStatus(dto.getStatus());
+        entity.setUpdateTime(Moments.now());
+        int success = pageDao.update(entity);
+        Asserts.greaterThan(success, 0, SystemErrorCode.UPDATE_DATA_ERROR, dto.getId());
+        return success;
     }
 
     @Override
