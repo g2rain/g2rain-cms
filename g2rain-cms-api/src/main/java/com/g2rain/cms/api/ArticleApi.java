@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -42,4 +43,8 @@ public interface ArticleApi {
     @Operation(summary = "条件分页查询")
     @GetMapping("/page")
     Result<PageData<ArticleVo>> selectPage(PageSelectListDto<ArticleSelectDto> selectDto);
+
+    @Operation(summary = "文章详情查询")
+    @GetMapping("/detail")
+    Result<ArticleDetailVo> detail(@Parameter(description = "主键") @RequestParam("id") Long id);
 }
