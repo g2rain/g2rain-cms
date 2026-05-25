@@ -2,6 +2,7 @@ package com.g2rain.cms.dto;
 
 import com.g2rain.common.model.BaseDto;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.NotNull;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,15 +21,11 @@ import lombok.Setter;
 @EqualsAndHashCode(callSuper = true)
 public class ArticleTagRelationDto extends BaseDto {
 
-    /**
-     * 文章标识
-     */
     @Schema(description = "文章标识")
+    @NotNull(message = "文章标识不能为空")
     private Long articleId;
 
-    /**
-     * 标签标识
-     */
     @Schema(description = "标签标识")
+    @NotNull(message = "标签标识不能为空")
     private Long tagId;
 }

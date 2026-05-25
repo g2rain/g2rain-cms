@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -57,7 +58,7 @@ public class TagController implements TagApi {
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新标签", description = "根据请求体主键是否存在，新增或更新标签信息")
-    public Result<Long> save(@RequestBody TagDto dto) {
+    public Result<Long> save(@Valid @RequestBody TagDto dto) {
         return Result.success(tagService.save(dto));
     }
 

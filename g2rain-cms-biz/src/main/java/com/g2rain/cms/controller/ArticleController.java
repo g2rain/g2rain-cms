@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -56,7 +57,7 @@ public class ArticleController implements ArticleApi {
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新文章", description = "根据请求体主键是否存在，新增或更新文章信息")
-    public Result<Long> save(@RequestBody ArticleDto dto) {
+    public Result<Long> save(@Valid @RequestBody ArticleDto dto) {
         return Result.success(articleService.save(dto));
     }
 

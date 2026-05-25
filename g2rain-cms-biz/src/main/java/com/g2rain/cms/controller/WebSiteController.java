@@ -12,6 +12,7 @@ import com.g2rain.common.model.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.annotation.Resource;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,7 +49,7 @@ public class WebSiteController implements WebSiteApi {
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新站点", description = "根据请求体主键是否存在，新增或更新站点信息")
-    public Result<Long> save(@RequestBody WebSiteDto dto) {
+    public Result<Long> save(@Valid @RequestBody WebSiteDto dto) {
         return Result.success(webSiteService.save(dto));
     }
 
