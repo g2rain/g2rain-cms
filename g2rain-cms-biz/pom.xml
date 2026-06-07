@@ -44,10 +44,6 @@
         </dependency>
         <dependency>
             <groupId>com.g2rain</groupId>
-            <artifactId>g2rain-starter-mybatis-pagination</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.g2rain</groupId>
             <artifactId>g2rain-starter-aegis-core</artifactId>
             <type>pom</type>
         </dependency>
