@@ -6,6 +6,7 @@ import com.g2rain.common.model.Result;
 import com.g2rain.cms.dto.SpaceSelectDto;
 import com.g2rain.cms.vo.SpaceVo;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
  *
  * @author G2rain Generator
  */
+@Tag(name = "内容空间", description = "内容空间（站点下的内容域）：列表与分页查询")
 public interface SpaceApi {
 
     /**
@@ -25,8 +27,8 @@ public interface SpaceApi {
      * @param selectDto 查询条件DTO
      * @return 数据列表
      */
-    @Operation(summary = "条件列表查询")
     @GetMapping("/list")
+    @Operation(summary = "查询内容空间列表", description = "按查询条件筛选内容空间，不分页返回列表")
     Result<List<SpaceVo>> selectList(SpaceSelectDto selectDto);
 
     /**
@@ -35,7 +37,7 @@ public interface SpaceApi {
      * @param selectDto 查询条件DTO（包含分页参数）
      * @return 分页数据
      */
-    @Operation(summary = "条件分页查询")
     @GetMapping("/page")
+    @Operation(summary = "分页查询内容空间", description = "按查询条件筛选内容空间并分页，含总数与当前页数据")
     Result<PageData<SpaceVo>> selectPage(PageSelectListDto<SpaceSelectDto> selectDto);
 }

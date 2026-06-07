@@ -11,6 +11,7 @@ import com.g2rain.cms.dao.SpaceDao;
 import com.g2rain.cms.dao.po.SpacePo;
 import com.g2rain.cms.dto.SpaceDto;
 import com.g2rain.cms.dto.SpaceSelectDto;
+import com.g2rain.cms.dto.SpaceUpdateStatusDto;
 import com.g2rain.cms.service.SpaceService;
 import com.g2rain.cms.vo.SpaceVo;
 import com.g2rain.mybatis.pagination.PageContext;
@@ -87,6 +88,21 @@ public class SpaceServiceImpl implements SpaceService {
         }
 
         return entity.getId();
+    }
+
+    @Override
+    public int updateStatus(SpaceUpdateStatusDto dto) {
+        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
+            throw new IllegalArgumentException("space updateStatus requires id and status");
+        }
+
+        SpacePo entity = new SpacePo();
+        entity.setId(dto.getId());
+        entity.setStatus(dto.getStatus());
+        entity.setUpdateTime(Moments.now());
+        int success = spaceDao.update(entity);
+        Asserts.greaterThan(success, 0, SystemErrorCode.UPDATE_DATA_ERROR, dto.getId());
+        return success;
     }
 
     @Override

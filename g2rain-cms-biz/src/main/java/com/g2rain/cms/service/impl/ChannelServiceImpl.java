@@ -11,6 +11,7 @@ import com.g2rain.cms.dao.ChannelDao;
 import com.g2rain.cms.dao.po.ChannelPo;
 import com.g2rain.cms.dto.ChannelDto;
 import com.g2rain.cms.dto.ChannelSelectDto;
+import com.g2rain.cms.dto.ChannelUpdateStatusDto;
 import com.g2rain.cms.service.ChannelService;
 import com.g2rain.cms.vo.ChannelVo;
 import com.g2rain.mybatis.pagination.PageContext;
@@ -87,6 +88,21 @@ public class ChannelServiceImpl implements ChannelService {
         }
 
         return entity.getId();
+    }
+
+    @Override
+    public int updateStatus(ChannelUpdateStatusDto dto) {
+        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
+            throw new IllegalArgumentException("channel updateStatus requires id and status");
+        }
+
+        ChannelPo entity = new ChannelPo();
+        entity.setId(dto.getId());
+        entity.setStatus(dto.getStatus());
+        entity.setUpdateTime(Moments.now());
+        int success = channelDao.update(entity);
+        Asserts.greaterThan(success, 0, SystemErrorCode.UPDATE_DATA_ERROR, dto.getId());
+        return success;
     }
 
     @Override

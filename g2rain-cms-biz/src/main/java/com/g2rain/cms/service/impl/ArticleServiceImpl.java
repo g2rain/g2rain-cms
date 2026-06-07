@@ -14,8 +14,10 @@ import com.g2rain.cms.dto.ArticleSelectDto;
 import com.g2rain.cms.dto.TagSelectByArticleIdsDto;
 import com.g2rain.cms.service.ArticleService;
 import com.g2rain.cms.service.TagService;
+import com.g2rain.cms.vo.ArticleDetailVo;
 import com.g2rain.cms.vo.ArticleVo;
-import com.g2rain.cms.vo.TagVo;
+import com.g2rain.common.web.PrincipalContext;
+import com.g2rain.common.web.PrincipalContextHolder;
 import com.g2rain.mybatis.pagination.PageContext;
 import com.g2rain.mybatis.pagination.model.Page;
 import jakarta.annotation.Resource;
@@ -105,6 +107,21 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
+    public ArticleDetailVo detail(Long id) {
+        ArticlePo po = articleDao.selectById(id);
+        if (Objects.isNull(po)) {
+            return null;
+        }
+
+        ArticleDetailVo detailVo = ArticleConverter.INSTANCE.po2detailVo(po);
+        TagSelectByArticleIdsDto tagSelectByArticleIdsDto = new TagSelectByArticleIdsDto();
+        tagSelectByArticleIdsDto.setArticleIds(List.of(id));
+        var tagsMap = tagService.selectTagsByArticleIds(tagSelectByArticleIdsDto);
+        detailVo.setTags(tagsMap.getOrDefault(id, Collections.emptyList()));
+        return detailVo;
+    }
+
+    @Override
     public Long save(ArticleDto dto) {
         // 转换DTO为PO
         ArticlePo entity = ArticleConverter.INSTANCE.dto2po(dto);
@@ -114,6 +131,8 @@ public class ArticleServiceImpl implements ArticleService {
         if (Objects.isNull(id) || id == 0) {
             // 新增：使用IdGenerator生成主键
             entity.setId(idGenerator.generateId());
+            PrincipalContext context = PrincipalContextHolder.get();
+            entity.setSourceApplicationId(context.getApplicationId());
             LocalDateTime now = Moments.now();
             entity.setUpdateTime(now);
             entity.setCreateTime(now);

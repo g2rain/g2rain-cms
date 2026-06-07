@@ -4,6 +4,7 @@ import com.g2rain.common.model.PageData;
 import com.g2rain.common.model.PageSelectListDto;
 import com.g2rain.cms.dto.SpaceDto;
 import com.g2rain.cms.dto.SpaceSelectDto;
+import com.g2rain.cms.dto.SpaceUpdateStatusDto;
 import com.g2rain.cms.vo.SpaceVo;
 
 import java.util.List;
@@ -39,6 +40,14 @@ public interface SpaceService {
      * @return 操作结果（影响行数）
      */
     Long save(SpaceDto dto);
+
+    /**
+     * 状态变更
+     *
+     * @param dto 需包含id与status
+     * @return 操作结果（影响行数）
+     */
+    int updateStatus(SpaceUpdateStatusDto dto);
 
     /**
      * 根据ID删除数据

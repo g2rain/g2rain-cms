@@ -44,10 +44,6 @@
         </dependency>
         <dependency>
             <groupId>com.g2rain</groupId>
-            <artifactId>g2rain-starter-mybatis-pagination</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.g2rain</groupId>
             <artifactId>g2rain-starter-aegis-core</artifactId>
             <type>pom</type>
         </dependency>
@@ -72,10 +68,6 @@
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct-processor</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.swagger.core.v3</groupId>
-            <artifactId>swagger-annotations-jakarta</artifactId>
         </dependency>
     </dependencies>
 

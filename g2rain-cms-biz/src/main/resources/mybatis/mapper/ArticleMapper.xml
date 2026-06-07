@@ -316,7 +316,7 @@
         <!-- 基础字段 -->
         create_time, update_time,
         <!-- 业务字段 -->
-        organ_id, space_id, category_id, source_application_id, source_trace_id, title, summary, cover, content_type, author, status, publish_time, content,
+        organ_id, space_id, category_id, source_application_id, source_trace_id, title, summary, cover, content_type, author, status, publish_time,
         <!-- deleteFlag字段（如果存在） -->
         delete_flag,
         <!-- version字段（如果存在） -->
