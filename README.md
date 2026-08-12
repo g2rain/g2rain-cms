@@ -1,6 +1,8 @@
-# g2rain-cms
+﻿<p align="center">
+  <img src="https://github.com/g2rain.png" alt="G2Rain" width="180" />
+</p>
 
-## 1. 徽标与状态标识
+# g2rain-cms
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Java](https://img.shields.io/badge/Java-25-437291?logo=openjdk&logoColor=white)](https://openjdk.org/)
@@ -8,210 +10,223 @@
 [![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.1-586069?logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
 [![Maven](https://img.shields.io/badge/build-Maven-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 
-## 2. 项目简介
+下一代AI软件开发范式，AI原生Agent平台，开源的企业级SaaS底座。
 
-`g2rain-cms` 是 G2rain 平台中的内容管理后端服务，围绕站点、栏目、页面、文章、标签、文章分类与内容空间等对象提供标准化接口能力，用于支撑内容类子应用、站点运营与内容交付场景。
+CMS 内容管理业务服务，围绕站点、空间、栏目、页面、文章、分类与标签提供内容管理能力；采用 API、业务实现与启动模块分层组织后端工程
 
-## 3. 平台定位
+[官网](https://www.g2rain.com) · [Issues](https://github.com/g2rain/g2rain/issues) · [Discussions](https://github.com/g2rain/g2rain/discussions)
 
-在 G2rain“企业级 AI 原生开源 SaaS 平台”体系中，`g2rain-cms` 位于业务域扩展层，承担内容管理领域服务的角色。
+## 目录
 
-它主要服务以下场景：
-- 为 `g2rain-cms-app` 提供文章、页面、栏目、站点、标签等内容对象的后端能力
-- 为平台内容类子应用提供标准化 CRUD 与分页查询接口
-- 为官网、专题页、内容运营和后续营销内容场景提供统一的领域实现基础
-- 与平台统一认证、统一网关、统一资源注册体系协同，形成内容应用的标准接入方式
+- 项目简介
+- 平台定位
+- 功能概览
+- 功能概览
+- 使用场景
+- 核心流程
+- 流程图
+- 技术栈
+- 环境要求
+- 快速开始
+- 构建与镜像
+- 安全说明
+- 与关联仓库的关系
+- 模块说明
+- 职责边界
+- 主要 HTTP 路径
+- 常见问题
+- 关联仓库
+- 参与贡献
+- 许可证
+- 联系我们
+- 致谢
 
-它与 `g2rain-cms-app`、`g2rain-basis`、`g2rain-iam`、`g2rain-gateway-webmvc`、`g2rain-gateway-webflux` 协同工作。
+## 项目简介
 
-## 4. 核心能力
+CMS 内容管理业务服务，围绕站点、空间、栏目、页面、文章、分类与标签提供内容管理能力；采用 API、业务实现与启动模块分层组织后端工程
 
-本章回答“这个仓库在平台里提供什么能力、解决什么问题”。
+## 平台定位
 
-- 站点与栏目管理能力：解决多站点、多栏目内容组织的问题，通过 `WebSite`、`Channel` 相关接口沉淀内容导航与承载结构。
-- 页面与内容空间管理能力：解决页面资源与内容归属管理的问题，通过 `Page`、`Space` 相关模型支撑页面级内容组织与隔离。
-- 文章与分类标签管理能力：解决文章内容结构化管理的问题，通过 `Article`、`ArticleCategory`、`Tag`、`ArticleTagRelation` 提供内容分类、标签关联与分页查询能力。
-- 标准化内容 CRUD 能力：解决业务域服务快速落地与长期一致性维护的问题，通过统一的 DTO / VO / Service / Dao / Mapper 结构提供标准化接口实现。
-- 内容域服务配置接入能力：解决内容服务在平台环境中的运行接入问题，通过 Nacos 注册发现、外部配置拉取与统一异常处理接入平台运行环境。
-- 镜像交付能力：解决内容服务标准部署与交付的问题，通过 `build.sh` 与 `Jib` 提供默认镜像构建入口。
+该仓库位于 g2rain 业务服务层，围绕具体业务域提供后端服务能力。
 
-## 5. 技术栈
+## 功能概览
 
-- 语言与运行时：`Java 25`
-- 后端框架：`Spring Boot 4.0.5`、`Spring Cloud 2025.1.1`
-- 配置与注册：`Nacos Discovery`、`Nacos Config`
-- 持久化：`MyBatis Spring Boot Starter 4.0.1`
-- 对象转换：`MapStruct 1.6.3`
-- 平台基础依赖：`g2rain-common`、`g2rain-starter-aegis-core`、`g2rain-starter-data-redis`、`g2rain-starter-mybatis-extensions`、`g2rain-starter-spring-doc`
-- 构建与交付：`Maven`、`Jib`、`build.sh`
+该仓库聚焦于 `内容管理`。
 
-## 6. 快速开始
+核心对象包括：
+- 应用
 
-### 环境要求
+## 功能概览
 
-- `JDK 25`
-- `Maven 3.9+`
-- 可用的 `Nacos`
-- 可用的数据库与相关平台基础依赖环境
+| 能力 | 说明 |
+| --- | --- |
+| 站点与空间管理 | 维护 CMS 站点与内容空间，为栏目、页面和文章提供内容归属边界。 |
+| 栏目与页面管理 | 提供栏目、页面的列表、分页、保存、删除与状态更新能力。 |
+| 文章内容管理 | 提供文章查询、保存、删除及其与分类、标签之间的关系维护。 |
+| 分类与标签体系 | 维护文章分类、标签以及文章标签批量关联等内容组织能力。 |
 
-### 关键配置
+## 使用场景
 
-当前仓库的关键运行配置主要来自 `g2rain-cms-startup/src/main/resources/application.yml` 与 Nacos 配置中心。
+| 场景 | 说明 |
+| --- | --- |
+| 搭建多站点内容空间 | 当平台需要按站点和空间组织不同业务或租户的内容时使用。 |
+| 管理栏目、页面与文章 | 当运营人员需要创建、编辑、分页查询、启停或删除内容对象时使用。 |
+| 构建分类与标签体系 | 当文章需要通过分类、标签和关联关系进行检索与组织时使用。 |
 
-| 变量名 | 说明 | 典型用途 |
+## 核心流程
+
+| 流程 | 关键步骤 | 代码线索 |
 | --- | --- | --- |
-| `SERVER_PORT` | 服务端口 | 默认 `8080` |
-| `SPRING_PROFILES_ACTIVE` | 启动环境 | 默认 `dev` |
-| `NACOS_SERVER_ADDR` | Nacos 地址 | 服务注册与配置拉取 |
-| `SPRING_CLOUD_NACOS_DISCOVERY_*` | 注册中心配置 | 服务发现 |
-| `SPRING_CLOUD_NACOS_CONFIG_*` | 配置中心配置 | 动态配置 |
+| 内容创建与组织 | 创建站点或内容空间 → 配置栏目与页面 → 创建文章并选择分类 → 为文章绑定标签 → 通过状态字段控制内容可用性 | WebSiteController、SpaceController、ChannelController、PageController、ArticleController、ArticleTagRelationController |
+| 内容查询与维护 | 前端按条件请求列表或分页接口 → Controller 调用业务 Service → 持久化层查询内容数据 → 返回统一分页或列表结果 → 保存、删除或更新状态后刷新页面 | g2rain-cms-api、g2rain-cms-biz、ArticleService、PageService、TagService |
 
-### 本地构建
+## 流程图
 
-```bash
-mvn clean package -DskipTests
+```mermaid
+flowchart TD
+  A[运营人员进入 CMS 应用] --> B[选择站点与内容空间]
+  B --> C[维护栏目或页面]
+  C --> D[创建或编辑文章]
+  D --> E[选择分类并绑定标签]
+  E --> F[保存内容与关联关系]
+  F --> G[更新内容状态]
+  G --> H[前端列表/分页查询展示]
 ```
 
-### 本地运行
+## 技术栈
 
-```bash
-mvn -pl g2rain-cms-startup spring-boot:run
-```
+| 类别 | 说明 |
+| --- | --- |
+| 运行时 | Java 25、Spring Boot 4.0.5、Spring Cloud 2025.1.1 |
+| 安全与令牌 | g2rain-starter-aegis-core |
+| 基础设施 | Redis、Nacos |
+| 其他 | Lombok |
 
-### 镜像构建
+## 环境要求
 
-```bash
-./build.sh
-./build.sh 1.0.0
-```
+- JDK 25+
+- Maven 3.9+
+- Redis
+- Nacos
 
-或：
+## 快速开始
 
-```bash
-cd g2rain-cms-startup
-mvn -DskipTests=true compile jib:dockerBuild -Djib.to.image=g2rain/g2rain-cms:latest
-```
+| 步骤 | 命令或位置 | 说明 |
+| --- | --- | --- |
+| 准备运行环境 | JDK 25+、Maven 3.9+、Redis、Nacos | 后端服务启动前需要准备 Java 构建环境和平台依赖的基础设施。 |
+| 调整配置 | `src/main/resources/application.yml` | 按需设置 SERVER_PORT、SPRING_PROFILES_ACTIVE、NACOS_SERVER_ADDR 等环境变量。 |
+| 构建项目 | `mvn clean package` | 执行 Maven 构建并生成可执行 Jar。 |
+| 本地启动 | `mvn spring-boot:run` | 以当前 profile 启动服务，默认端口以 application.yml 中的 SERVER_PORT 为准。 |
 
-## 7. 项目结构
+版本号以项目构建配置为准，当前识别为 `1.0-SNAPSHOT`。
 
-本章回答“代码与模块是如何组织的、排查和扩展时应该先看哪里”。
+## 构建与镜像
 
-```text
-g2rain-cms/
-├── build.sh
-├── codegen.properties
-├── pom.xml
-├── g2rain-cms-api/
-├── g2rain-cms-biz/
-│   ├── controller
-│   ├── service
-│   ├── dao
-│   ├── converter
-│   └── resources/mybatis/mapper
-└── g2rain-cms-startup/
-    └── src/main/resources/
-```
+| 目标 | 命令 | 产物 | 说明 |
+| --- | --- | --- | --- |
+| 可执行 Jar | `mvn clean package` | `g2rain-cms-1.0-SNAPSHOT.jar` | 执行 Maven 标准构建，生成服务可执行产物。 |
+| 本地运行 | `mvn spring-boot:run` | 本地 Spring Boot 进程 | 使用当前 profile 启动服务，便于本地联调。 |
+| 构建脚本 | `./build.sh` | 脚本定义的构建结果 | 仓库提供 build.sh，可承载组织内约定的镜像或发布流程。 |
 
-### 结构说明
+## 安全说明
 
-- `g2rain-cms-api`：对外暴露 CMS 领域接口契约、查询模型与返回模型。
-- `g2rain-cms-biz/controller`：承载 `article`、`channel`、`page`、`space`、`tag`、`web_site` 等 HTTP 入口。
-- `g2rain-cms-biz/service/impl`：承载领域服务实现，是排查业务逻辑时的第一入口。
-- `g2rain-cms-biz/dao` 与 `resources/mybatis/mapper`：承载 DAO 接口与 SQL 映射。
-- `g2rain-cms-startup`：承载服务启动、Profile 配置、Nacos 接入与运行时配置。
-- `build.sh`：仓库默认镜像构建入口。
+| 主题 | 说明 |
+| --- | --- |
+| 内容操作权限 | 站点、栏目、页面和文章的写操作应通过网关与平台权限体系限制到具备管理权限的主体。 |
+| 内容输入安全 | 富文本或 Markdown 内容在展示前应执行必要的内容过滤，避免不可信脚本进入页面。 |
+| 数据隔离 | 站点、空间和内容对象需要遵循平台组织或租户数据隔离规则。 |
 
-## 8. 核心业务流程
+## 与关联仓库的关系
 
-本章回答“这些能力在运行时是如何串起来工作的”。
+本仓库作为 CMS 业务后端，与 g2rain-cms-app 协同提供内容管理界面与业务 API，并复用 g2rain-common 等后端公共能力。
 
-#### 1. 内容对象标准 CRUD 主线
+## 模块说明
 
-- 前端子应用通过 `/article`、`/channel`、`/page`、`/space`、`/tag`、`/web_site` 等控制器访问内容服务。
-- Controller 层直接实现 `g2rain-cms-api` 中定义的接口契约。
-- Service 层完成 DTO 转 PO、分页查询、创建更新、删除等标准处理。
-- DAO 与 MyBatis Mapper 完成最终持久化。
+| 模块 | 职责说明 | 代码线索 |
+| --- | --- | --- |
+| g2rain-cms-api | 定义文章、分类、标签、栏目、页面、空间和站点等业务 API 契约。 | g2rain-cms-api/src/main/java/com/g2rain/cms/api |
+| g2rain-cms-biz | 实现 CMS 控制器、业务服务与持久化逻辑。 | g2rain-cms-biz/controller、service、repository |
+| g2rain-cms-startup | 提供 Spring Boot 启动入口与运行配置装配。 | g2rain-cms-startup、application.yml |
 
-#### 2. 文章内容维护主线
+## 职责边界
 
-- 客户端提交文章 DTO 到 `ArticleController.save`。
-- `ArticleServiceImpl` 使用 `ArticleConverter` 完成模型转换。
-- 新增时使用 `IdGenerator` 生成主键，并使用 `Moments.now()` 写入创建、更新时间。
-- 更新时按主键回写，形成统一的文章保存链路。
+该仓库主要负责：
+- 负责具体业务域的 API、业务规则、数据持久化与状态维护
+- 负责站点、空间、栏目、页面、文章、分类与标签等内容管理能力
 
-#### 3. 文章标签关联主线
+该仓库默认不负责：
+- 不负责平台统一认证、网关路由和基础主数据的权威管理
+- 不负责业务前端界面与浏览器侧交互实现
 
-- 客户端在文章编辑场景中提交标签关联请求。
-- `ArticleTagRelationServiceImpl.batchAddTags` 会先查出现有文章标签关系。
-- 系统通过 `LinkedHashSet` 去重，再仅写入新增关联，避免重复绑定。
-- 最终批量写入关系表，保证文章标签关联链路稳定可控。
+## 主要 HTTP 路径
 
-#### 4. 平台接入与交付主线
+| 方法 | 路径 | 说明 |
+| --- | --- | --- |
+| DELETE | /article/{id} | 对外暴露的服务接口 |
+| DELETE | /article_category/{id} | 对外暴露的服务接口 |
+| DELETE | /article_tag_relation/{id} | 对外暴露的服务接口 |
+| DELETE | /channel/{id} | 对外暴露的服务接口 |
+| DELETE | /page/{id} | 对外暴露的服务接口 |
+| DELETE | /space/{id} | 对外暴露的服务接口 |
+| DELETE | /tag/{id} | 对外暴露的服务接口 |
+| DELETE | /web_site/{id} | 对外暴露的服务接口 |
+| GET | /abc | 对外暴露的服务接口 |
+| GET | /list | 对外暴露的服务接口 |
+| GET | /page | 对外暴露的服务接口 |
+| POST | /article/save | 对外暴露的服务接口 |
+| POST | /article_category/save | 对外暴露的服务接口 |
+| POST | /article_category/update_status | 对外暴露的服务接口 |
+| POST | /article_tag_relation/batch_add_tags | 对外暴露的服务接口 |
+| POST | /article_tag_relation/save | 对外暴露的服务接口 |
+| POST | /by_article | 对外暴露的服务接口 |
+| POST | /channel/save | 对外暴露的服务接口 |
+| POST | /channel/update_status | 对外暴露的服务接口 |
+| POST | /page/save | 对外暴露的服务接口 |
+| POST | /page/update_status | 对外暴露的服务接口 |
+| POST | /space/save | 对外暴露的服务接口 |
+| POST | /space/update_status | 对外暴露的服务接口 |
+| POST | /tag/save | 对外暴露的服务接口 |
+| POST | /web_site/save | 对外暴露的服务接口 |
+| POST | /web_site/update_status | 对外暴露的服务接口 |
 
-- 服务启动时由 `g2rain-cms-startup` 读取本地配置与 Nacos 配置。
-- 服务注册到平台运行环境，并通过统一配置接入日志、异常处理和接口文档能力。
-- 交付阶段通过根目录 `build.sh` 先执行全仓 `mvn clean install`，再进入 `g2rain-cms-startup` 使用 `jib:dockerBuild` 输出镜像。
+## 常见问题
 
-## 9. 常用命令
+| 问题 | 可能原因 | 处理建议 |
+| --- | --- | --- |
+| 内容列表为空 | 站点、空间、状态或分页查询条件不匹配。 | 检查请求条件、数据隔离上下文和对应内容状态。 |
+| 文章标签未生效 | 文章标签关联未保存，或批量关联参数不完整。 | 检查 ArticleTagRelation 接口参数、文章与标签标识及事务日志。 |
+| 服务无法读取配置 | Nacos、MySQL 或运行环境配置不正确。 | 检查配置中心地址、数据库连接和启动模块 application.yml。 |
 
-```bash
-mvn clean package
-mvn -pl g2rain-cms-startup spring-boot:run
-mvn test
-./build.sh
-./build.sh 1.0.0
-```
+## 关联仓库
 
-## 10. 质量与测试
+| 仓库 | 协作关系 |
+| --- | --- |
+| g2rain-common | 复用平台公共规范、通用模型、工具能力或基础依赖约束。 |
 
-- 当前仓库已具备标准 Maven 多模块结构与统一服务实现风格。
-- 当前扫描重点集中在主源码结构，后续建议优先增加文章、标签关系、页面承载等关键场景测试。
-- 提交前建议结合实际环境验证 Nacos、数据库与前端联调链路。
+## 参与贡献
 
-## 11. 相关仓库
+我们欢迎所有形式的贡献：Issue 反馈、文档改进、功能建议与代码提交。
 
-- `g2rain-cms-app`：CMS 前端子应用
-- `g2rain-basis`：资源、应用、角色与权限治理底座
-- `g2rain-iam`：统一身份认证服务
-- `g2rain-gateway-webmvc`：平台网关实现之一
-- `g2rain-gateway-webflux`：平台网关实现之一
+推荐流程：
 
-## 12. 使用建议
+1. Fork 本仓库。
+2. 创建特性分支：`git checkout -b feature/your-feature-name`。
+3. 提交更改：`git commit -m "Add some feature"`。
+4. 推送分支：`git push origin feature/your-feature-name`。
+5. 提交 Pull Request。
 
-- 适合作为内容域后端服务独立部署，并由内容类子应用接入。
-- 当新增内容对象时，建议继续沿用当前统一的 `api / biz / startup` 与生成器约定。
-- 当需要快速对接前端子应用时，优先复用现有分页、状态、主键和时间字段处理方式。
+代码贡献前请尽量补充必要的测试和文档，并确保构建、测试与静态检查通过。
 
-## 13. 贡献指南
+## 许可证
 
-欢迎通过文档改进、Issue 反馈、测试补充、代码优化、功能增强等形式参与贡献。
+本项目基于 [Apache 2.0许可证](https://github.com/g2rain/g2rain-common/blob/main/LICENSE) 开源。
 
-建议流程：
-1. Fork 本仓库
-2. 创建特性分支
-3. 提交修改
-4. 推送分支
-5. 提交 Pull Request
+## 联系我们
 
-提交前请尽量确保：
-- 遵循现有技术栈与代码规范
-- 补充必要测试
-- 更新相关文档
-- 确保测试通过
+- Issues: [GitHub Issues](https://github.com/g2rain/g2rain/issues)
+- 讨论: [GitHub Discussions](https://github.com/g2rain/g2rain/discussions)
+- 邮箱: g2rain_developer@163.com
 
-## 14. 许可证
+## 致谢
 
-本项目基于 [Apache 2.0许可证](LICENSE) 开源。
-
-## 15. 联系我们
-
-- **站点**: https://www.g2rain.com/
-- **Issues**: [GitHub Issues](https://github.com/g2rain/g2rain/issues)
-- **讨论**: [GitHub Discussions](https://github.com/g2rain/g2rain/discussions)
-- **邮箱**: g2rain_developer@163.com
-
-## 16. 致谢
-
-感谢所有为这个项目做出贡献的开发者们。
-
-如果这个项目对您有帮助，欢迎 Star 支持。
+感谢所有为 g2rain 项目提交 Issue、代码、文档、建议和使用反馈的开发者们！
