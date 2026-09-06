@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * 文章表查询DTO
@@ -15,11 +16,11 @@ import java.time.LocalDateTime;
  *
  * @author G2rain Generator
  */
-@Schema(description = "文章表业务DTO")
 @Setter
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Schema(description = "文章表 DTO")
 public class ArticleDto extends BaseDto {
 
     /**
