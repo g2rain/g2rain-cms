@@ -1,16 +1,16 @@
 package com.g2rain.cms.vo;
 
-import com.g2rain.common.json.AdminCompanyCondition;
-import com.g2rain.common.json.ConditionalJsonIgnore;
-import com.g2rain.common.model.BaseVo;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.g2rain.common.model.BaseVo;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
+import com.g2rain.common.json.ConditionalJsonIgnore;
+import com.g2rain.common.json.AdminCompanyCondition;
 
 /**
  * 文章表返回VO
@@ -19,11 +19,11 @@ import java.util.List;
  *
  * @author G2rain Generator
  */
-@Schema(description = "文章表返回")
 @Setter
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Schema(description = "文章表 VO")
 public class ArticleVo extends BaseVo {
 
     /**
@@ -99,15 +99,15 @@ public class ArticleVo extends BaseVo {
     private LocalDateTime publishTime;
 
     /**
-     * 标签列表
+     * 内容
      */
-    @Schema(description = "标签列表")
-    private List<TagVo> tags;
+    @Schema(description = "内容")
+    private String content;
 
     /**
      * 删除标识
      */
-    @Schema(description = "删除标识")
+    @Schema(description = "删除标识（0 未删除，1 已删除）", example = "false")
     @ConditionalJsonIgnore(adminCompany = AdminCompanyCondition.TRUE)
     private Boolean deleteFlag;
 }

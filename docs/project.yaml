@@ -1,0 +1,116 @@
+schemaVersion: 1
+name: g2rain-cms
+family: business-service
+role: CMS 内容管理领域服务
+language: Java
+buildTool: Maven
+version: 1.0-SNAPSHOT
+releaseRevision: 1.0.5
+license: Apache-2.0
+
+architectureBaseline:
+  repository: https://github.com/g2rain/g2rain
+  ref: architecture-v1.0.0
+  profile: docs/architecture/profiles/java-domain-service
+  version: 1.0.0
+  status: planned
+  releasedAt: "2026-08-24"
+  deviations: docs/architecture/deviations.md
+
+ownership:
+  owns:
+    - 站点与内容空间
+    - 栏目、独立页面与文章内容
+    - 文章分类、标签和文章标签关系
+    - CMS 查询、写入、状态变化和持久化规则
+  excludes:
+    - CMS 管理端页面与微前端生命周期
+    - IAM 的认证与 Token 签发
+    - Gateway 的统一入口鉴权与转发
+    - 平台组织主数据和通用基础设施能力
+
+modules:
+  - name: g2rain-cms-api
+    path: g2rain-cms-api
+    role: 查询条件、VO 与可复用查询契约
+    mayDependOn: []
+  - name: g2rain-cms-biz
+    path: g2rain-cms-biz
+    role: Controller、Service、DAO、Mapper、写入 DTO 与领域实现
+    mayDependOn: [g2rain-cms-api]
+  - name: g2rain-cms-startup
+    path: g2rain-cms-startup
+    role: Spring Boot 启动、配置、Actuator 与镜像组装
+    mayDependOn: [g2rain-cms-biz]
+
+domains:
+  - web-site
+  - content-space
+  - channel
+  - page
+  - article
+  - article-category
+  - tag
+  - article-tag-relation
+
+runtime:
+  mainClass: com.g2rain.Application
+  serviceName: g2rain-cms
+  defaultPort: 8080
+  defaultProfile: dev
+  minimumVersions:
+    java: "25"
+    mysql: "8.0.13"
+  dependencies: [MySQL, Redis, Nacos]
+
+commands:
+  verify: mvn clean verify
+  run: mvn -pl g2rain-cms-startup -am spring-boot:run
+  package: mvn clean package
+  codegen: mvn g2rain-generator:generate
+  image: ./build.sh <tag>
+
+validation:
+  lastVerifiedAt: "2026-09-05"
+  command: mvn clean verify
+  result: passed
+  reactorProjects: 4
+  testsRun: 0
+  note: API、Biz 和 Startup 均无测试源码；当前结果只证明编译、打包与 Javadoc/Source 产物生成通过
+
+collaborators:
+  - repository: g2rain/g2rain-cms-app
+    role: CMS 管理端业务前端
+  - repository: g2rain/g2rain-gateway-webflux
+    role: App 访问 CMS 的统一鉴权与转发入口
+  - repository: g2rain/g2rain-iam
+    role: 为 App 提供认证和 Token
+  - repository: g2rain/g2rain-common
+    role: Result、分页、基础模型、断言、时间和 ID 接口
+  - repository: g2rain/g2rain-mybatis-extensions
+    role: 分页与组织数据隔离扩展
+
+documentation:
+  entry: docs/index.md
+  agentEntry: AGENTS.md
+  required:
+    - docs/requirements/README.md
+    - docs/community.md
+    - docs/architecture/overview.md
+    - docs/architecture/modules.md
+    - docs/architecture/dependencies.md
+    - docs/architecture/runtime-flows.md
+    - docs/architecture/deviations.md
+    - docs/development/local-development.md
+    - docs/development/code-conventions.md
+    - docs/development/api-conventions.md
+    - docs/development/database-conventions.md
+    - docs/development/testing.md
+    - docs/development/definition-of-done.md
+    - docs/development/code-generation.md
+    - docs/operations/configuration.md
+    - docs/operations/deployment.md
+    - docs/operations/observability.md
+    - docs/operations/troubleshooting.md
+    - docs/security/security-boundaries.md
+

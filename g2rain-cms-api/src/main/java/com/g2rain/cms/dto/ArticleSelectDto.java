@@ -1,13 +1,14 @@
 package com.g2rain.cms.dto;
 
-import com.g2rain.common.model.BaseSelectListDto;
-import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.g2rain.common.model.BaseSelectListDto;
+import io.swagger.v3.oas.annotations.media.Schema;
 
 import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 /**
  * 文章表查询入参DTO
@@ -16,11 +17,11 @@ import java.time.LocalDateTime;
  *
  * @author G2rain Generator
  */
-@Schema(description = "文章表查询条件")
 @Setter
 @Getter
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
+@Schema(description = "文章表查询入参 DTO")
 public class ArticleSelectDto extends BaseSelectListDto {
 
     /**
