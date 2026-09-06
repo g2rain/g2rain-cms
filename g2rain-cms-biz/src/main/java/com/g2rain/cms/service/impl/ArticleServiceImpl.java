@@ -11,13 +11,8 @@ import com.g2rain.cms.dao.ArticleDao;
 import com.g2rain.cms.dao.po.ArticlePo;
 import com.g2rain.cms.dto.ArticleDto;
 import com.g2rain.cms.dto.ArticleSelectDto;
-import com.g2rain.cms.dto.TagSelectByArticleIdsDto;
 import com.g2rain.cms.service.ArticleService;
-import com.g2rain.cms.service.TagService;
-import com.g2rain.cms.vo.ArticleDetailVo;
 import com.g2rain.cms.vo.ArticleVo;
-import com.g2rain.common.web.PrincipalContext;
-import com.g2rain.common.web.PrincipalContextHolder;
 import com.g2rain.mybatis.pagination.PageContext;
 import com.g2rain.mybatis.pagination.model.Page;
 import jakarta.annotation.Resource;
@@ -26,7 +21,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -42,9 +36,6 @@ public class ArticleServiceImpl implements ArticleService {
     @Resource(name = "articleDao")
     private ArticleDao articleDao;
 
-    @Resource(name = "tagServiceImpl")
-    private TagService tagService;
-
     private IdGenerator idGenerator;
 
     @Qualifier("idGenerator")
@@ -55,27 +46,10 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public List<ArticleVo> selectList(ArticleSelectDto selectDto) {
-        List<ArticlePo> pos = articleDao.selectList(selectDto);
-        List<ArticleVo> vos = pos.stream()
+        return articleDao.selectList(selectDto)
+                .stream()
                 .map(ArticleConverter.INSTANCE::po2vo)
                 .toList();
-
-        if (!vos.isEmpty()) {
-            List<Long> articleIds = pos.stream()
-                    .map(ArticlePo::getId)
-                    .filter(Objects::nonNull)
-                    .toList();
-
-            TagSelectByArticleIdsDto tagSelectByArticleIdsDto = new TagSelectByArticleIdsDto();
-            tagSelectByArticleIdsDto.setArticleIds(articleIds);
-            var tagsMap = tagService.selectTagsByArticleIds(tagSelectByArticleIdsDto);
-
-            for (ArticleVo vo : vos) {
-                vo.setTags(tagsMap.getOrDefault(vo.getId(), Collections.emptyList()));
-            }
-        }
-
-        return vos;
     }
 
     @Override
@@ -83,42 +57,11 @@ public class ArticleServiceImpl implements ArticleService {
         Page<ArticlePo> page = PageContext.of(selectDto.getPageNum(), selectDto.getPageSize(), () -> {
             articleDao.selectList(selectDto.getQuery());
         });
-
-        List<ArticlePo> pos = page.getResult();
-        List<ArticleVo> result = pos.stream()
+        List<ArticleVo> result = page.getResult()
+                .stream()
                 .map(ArticleConverter.INSTANCE::po2vo)
                 .toList();
-
-        if (!result.isEmpty()) {
-            List<Long> articleIds = pos.stream()
-                    .map(ArticlePo::getId)
-                    .filter(Objects::nonNull)
-                    .toList();
-
-            TagSelectByArticleIdsDto tagSelectByArticleIdsDto = new TagSelectByArticleIdsDto();
-            tagSelectByArticleIdsDto.setArticleIds(articleIds);
-            var tagsMap = tagService.selectTagsByArticleIds(tagSelectByArticleIdsDto);
-
-            for (ArticleVo vo : result) {
-                vo.setTags(tagsMap.getOrDefault(vo.getId(), Collections.emptyList()));
-            }
-        }
         return PageData.of(page.getPageNum(), page.getPageSize(), page.getTotal(), result);
-    }
-
-    @Override
-    public ArticleDetailVo detail(Long id) {
-        ArticlePo po = articleDao.selectById(id);
-        if (Objects.isNull(po)) {
-            return null;
-        }
-
-        ArticleDetailVo detailVo = ArticleConverter.INSTANCE.po2detailVo(po);
-        TagSelectByArticleIdsDto tagSelectByArticleIdsDto = new TagSelectByArticleIdsDto();
-        tagSelectByArticleIdsDto.setArticleIds(List.of(id));
-        var tagsMap = tagService.selectTagsByArticleIds(tagSelectByArticleIdsDto);
-        detailVo.setTags(tagsMap.getOrDefault(id, Collections.emptyList()));
-        return detailVo;
     }
 
     @Override
@@ -131,8 +74,6 @@ public class ArticleServiceImpl implements ArticleService {
         if (Objects.isNull(id) || id == 0) {
             // 新增：使用IdGenerator生成主键
             entity.setId(idGenerator.generateId());
-            PrincipalContext context = PrincipalContextHolder.get();
-            entity.setSourceApplicationId(context.getApplicationId());
             LocalDateTime now = Moments.now();
             entity.setUpdateTime(now);
             entity.setCreateTime(now);
