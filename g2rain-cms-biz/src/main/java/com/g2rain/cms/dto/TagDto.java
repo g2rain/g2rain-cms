@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.g2rain.common.validation.CreateGroup;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * 标签表查询DTO
@@ -29,6 +32,8 @@ public class TagDto extends BaseDto {
     /**
      * 标签名称
      */
-    @Schema(description = "标签名称")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 128)
+    @Schema(description = "标签名称（新增必填）")
     private String tagName;
 }

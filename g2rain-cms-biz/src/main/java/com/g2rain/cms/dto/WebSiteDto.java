@@ -6,6 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.g2rain.common.validation.CreateGroup;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 
 /**
@@ -30,30 +34,37 @@ public class WebSiteDto extends BaseDto {
     /**
      * 站点名称
      */
-    @Schema(description = "站点名称")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 128)
+    @Schema(description = "站点名称（新增必填）")
     private String siteName;
 
     /**
      * 站点编码
      */
-    @Schema(description = "站点编码")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 64)
+    @Schema(description = "站点编码（新增必填）")
     private String siteCode;
 
     /**
      * 站点域名（多个用逗号分隔）
      */
+    @Size(max = 255)
     @Schema(description = "站点域名（多个用逗号分隔）")
     private String domain;
 
     /**
      * 站点描述
      */
+    @Size(max = 512)
     @Schema(description = "站点描述")
     private String description;
 
     /**
      * 状态[ENABLED:启用, DISABLED:禁用]
      */
+    @Size(max = 32)
     @Schema(description = "状态[ENABLED:启用, DISABLED:禁用]")
     private String status;
 }

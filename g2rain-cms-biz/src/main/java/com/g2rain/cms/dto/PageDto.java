@@ -6,6 +6,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.g2rain.common.validation.CreateGroup;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * 页面表查询DTO
@@ -29,36 +33,43 @@ public class PageDto extends BaseDto {
     /**
      * 空间标识
      */
-    @Schema(description = "空间标识")
+    @NotNull(groups = CreateGroup.class)
+    @Schema(description = "空间标识（新增必填）")
     private Long spaceId;
 
     /**
      * 页面名称
      */
-    @Schema(description = "页面名称")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 128)
+    @Schema(description = "页面名称（新增必填）")
     private String pageName;
 
     /**
      * 页面编码
      */
+    @Size(max = 64)
     @Schema(description = "页面编码")
     private String pageCode;
 
     /**
      * 访问路径
      */
+    @Size(max = 255)
     @Schema(description = "访问路径")
     private String path;
 
     /**
      * md:markdown格式, html:网页
      */
+    @Size(max = 32)
     @Schema(description = "内容类型[MARKDOWN:Markdown, HTML:HTML]")
     private String contentType;
 
     /**
      * 状态[DRAFT:草稿, PUBLISHED:发布]
      */
+    @Size(max = 32)
     @Schema(description = "状态[DRAFT:草稿, PUBLISHED:发布]")
     private String status;
 

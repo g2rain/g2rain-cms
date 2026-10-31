@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import com.g2rain.common.validation.Validations;
 
 /**
  * 站点表服务实现类
@@ -67,6 +68,11 @@ public class WebSiteServiceImpl implements WebSiteService {
 
     @Override
     public Long save(WebSiteDto dto) {
+        if (dto.getStatus() == null || dto.getStatus().isBlank()) {
+            dto.setStatus("ENABLED");
+        }
+        Validations.validateSave(dto);
+
         // 转换DTO为PO
         WebSitePo entity = WebSiteConverter.INSTANCE.dto2po(dto);
 
@@ -92,9 +98,7 @@ public class WebSiteServiceImpl implements WebSiteService {
 
     @Override
     public int updateStatus(WebSiteUpdateStatusDto dto) {
-        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
-            throw new IllegalArgumentException("webSite updateStatus requires id and status");
-        }
+        Validations.validateDefault(dto);
 
         WebSitePo entity = new WebSitePo();
         entity.setId(dto.getId());

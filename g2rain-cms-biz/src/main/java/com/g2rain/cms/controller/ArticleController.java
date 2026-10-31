@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import com.g2rain.web.interceptors.annotations.IdentityInject;
 
 /**
  * 文章表控制器
@@ -34,17 +35,20 @@ public class ArticleController implements ArticleApi {
     private ArticleService articleService;
 
     @Override
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<List<ArticleVo>> selectList(ArticleSelectDto selectDto) {
         return Result.success(articleService.selectList(selectDto));
     }
 
     @Override
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<PageData<ArticleVo>> selectPage(PageSelectListDto<ArticleSelectDto> selectDto) {
         return Result.successPage(articleService.selectPage(selectDto));
     }
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新文章表信息", description = "新增或更新文章表基础信息")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<Long> save(@RequestBody ArticleDto dto) {
         return Result.success(articleService.save(dto));
     }

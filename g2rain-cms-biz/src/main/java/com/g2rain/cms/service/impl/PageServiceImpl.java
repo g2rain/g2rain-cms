@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import com.g2rain.common.validation.Validations;
 
 /**
  * 页面表服务实现类
@@ -67,6 +68,11 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public Long save(PageDto dto) {
+        if (dto.getStatus() == null || dto.getStatus().isBlank()) {
+            dto.setStatus("DRAFT");
+        }
+        Validations.validateSave(dto);
+
         // 转换DTO为PO
         PagePo entity = PageConverter.INSTANCE.dto2po(dto);
 
@@ -92,9 +98,7 @@ public class PageServiceImpl implements PageService {
 
     @Override
     public int updateStatus(PageUpdateStatusDto dto) {
-        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
-            throw new IllegalArgumentException("page updateStatus requires id and status");
-        }
+        Validations.validateDefault(dto);
 
         PagePo entity = new PagePo();
         entity.setId(dto.getId());
