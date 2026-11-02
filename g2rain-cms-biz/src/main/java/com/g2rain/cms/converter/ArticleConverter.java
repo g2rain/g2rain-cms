@@ -3,7 +3,6 @@ package com.g2rain.cms.converter;
 import com.g2rain.common.converter.CommonConverter;
 import com.g2rain.cms.dao.po.ArticlePo;
 import com.g2rain.cms.dto.ArticleDto;
-import com.g2rain.cms.vo.ArticleDetailVo;
 import com.g2rain.cms.vo.ArticleVo;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -32,16 +31,7 @@ public interface ArticleConverter {
      */
     @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToString")
     @Mapping(target = "updateTime", source = "updateTime", qualifiedByName = "localDateTimeToString")
-    @Mapping(target = "tags", ignore = true)
     ArticleVo po2vo(ArticlePo po);
-
-    /**
-     * Po -> DetailVo
-     */
-    @Mapping(target = "createTime", source = "createTime", qualifiedByName = "localDateTimeToString")
-    @Mapping(target = "updateTime", source = "updateTime", qualifiedByName = "localDateTimeToString")
-    @Mapping(target = "tags", ignore = true)
-    ArticleDetailVo po2detailVo(ArticlePo po);
 
     /**
      * Dto -> Po

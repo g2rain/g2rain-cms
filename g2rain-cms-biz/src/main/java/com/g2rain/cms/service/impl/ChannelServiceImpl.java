@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import com.g2rain.common.validation.Validations;
 
 /**
  * 栏目表服务实现类
@@ -67,6 +68,17 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public Long save(ChannelDto dto) {
+        if (dto.getSortOrder() == null) {
+            dto.setSortOrder(0);
+        }
+        if (dto.getVisible() == null) {
+            dto.setVisible((byte) 1);
+        }
+        if (dto.getStatus() == null || dto.getStatus().isBlank()) {
+            dto.setStatus("ENABLED");
+        }
+        Validations.validateSave(dto);
+
         // 转换DTO为PO
         ChannelPo entity = ChannelConverter.INSTANCE.dto2po(dto);
 
@@ -92,9 +104,7 @@ public class ChannelServiceImpl implements ChannelService {
 
     @Override
     public int updateStatus(ChannelUpdateStatusDto dto) {
-        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
-            throw new IllegalArgumentException("channel updateStatus requires id and status");
-        }
+        Validations.validateDefault(dto);
 
         ChannelPo entity = new ChannelPo();
         entity.setId(dto.getId());

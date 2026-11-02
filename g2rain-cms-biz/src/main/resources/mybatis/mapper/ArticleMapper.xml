@@ -316,7 +316,7 @@
         <!-- 基础字段 -->
         create_time, update_time,
         <!-- 业务字段 -->
-        organ_id, space_id, category_id, source_application_id, source_trace_id, title, summary, cover, content_type, author, status, publish_time,
+        organ_id, space_id, category_id, source_application_id, source_trace_id, title, summary, cover, content_type, author, status, publish_time, content,
         <!-- deleteFlag字段（如果存在） -->
         delete_flag,
         <!-- version字段（如果存在） -->
@@ -399,6 +399,174 @@
                 AND content = #{content, jdbcType=LONGVARCHAR}
             </if>
             <!-- 过滤已删除的记录 -->
+            AND (delete_flag = 0 OR delete_flag IS NULL)
+        </where>
+        <include refid="dynamicOrderBy"/>
+    </select>
+
+    <!-- 插入单条记录（忽略数据隔离） -->
+    <insert id="insertWithoutIsolation" parameterType="com.g2rain.cms.dao.po.ArticlePo">
+        INSERT INTO article (
+        id,
+        create_time, update_time,
+        organ_id, space_id, category_id, source_application_id, source_trace_id, title, summary, cover, content_type, author, status, publish_time, content,
+        delete_flag,
+        version
+        ) VALUES (
+        #{id, jdbcType=BIGINT},
+        #{createTime, jdbcType=TIMESTAMP}, #{updateTime, jdbcType=TIMESTAMP},
+        #{organId, jdbcType=BIGINT}, #{spaceId, jdbcType=BIGINT}, #{categoryId, jdbcType=BIGINT}, #{sourceApplicationId, jdbcType=BIGINT}, #{sourceTraceId, jdbcType=VARCHAR}, #{title, jdbcType=VARCHAR}, #{summary, jdbcType=VARCHAR}, #{cover, jdbcType=VARCHAR}, #{contentType, jdbcType=VARCHAR}, #{author, jdbcType=VARCHAR}, #{status, jdbcType=VARCHAR}, #{publishTime, jdbcType=TIMESTAMP}, #{content, jdbcType=LONGVARCHAR},
+        0,
+        0
+        )
+    </insert>
+
+    <!-- 根据ID更新记录（忽略数据隔离） -->
+    <update id="updateWithoutIsolation" parameterType="com.g2rain.cms.dao.po.ArticlePo">
+        UPDATE article
+        <set>
+            <if test="updateTime != null">
+                update_time = #{updateTime, jdbcType=TIMESTAMP},
+            </if>
+            <if test="organId != null">
+                organ_id = #{organId, jdbcType=BIGINT},
+            </if>
+            <if test="spaceId != null">
+                space_id = #{spaceId, jdbcType=BIGINT},
+            </if>
+            <if test="categoryId != null">
+                category_id = #{categoryId, jdbcType=BIGINT},
+            </if>
+            <if test="sourceApplicationId != null">
+                source_application_id = #{sourceApplicationId, jdbcType=BIGINT},
+            </if>
+            <if test="sourceTraceId != null">
+                source_trace_id = #{sourceTraceId, jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title, jdbcType=VARCHAR},
+            </if>
+            <if test="summary != null">
+                summary = #{summary, jdbcType=VARCHAR},
+            </if>
+            <if test="cover != null">
+                cover = #{cover, jdbcType=VARCHAR},
+            </if>
+            <if test="contentType != null">
+                content_type = #{contentType, jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                author = #{author, jdbcType=VARCHAR},
+            </if>
+            <if test="status != null">
+                status = #{status, jdbcType=VARCHAR},
+            </if>
+            <if test="publishTime != null">
+                publish_time = #{publishTime, jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                content = #{content, jdbcType=LONGVARCHAR},
+            </if>
+            version = version + 1
+        </set>
+        WHERE id = #{id, jdbcType=BIGINT}
+    </update>
+
+    <!-- 根据ID查询记录（忽略数据隔离） -->
+    <select id="selectByIdWithoutIsolation" parameterType="Long" resultMap="BaseResultMap">
+        SELECT
+        id,
+        create_time, update_time,
+        organ_id, space_id, category_id, source_application_id, source_trace_id, title, summary, cover, content_type, author, status, publish_time, content,
+        delete_flag,
+        version
+        FROM article
+        WHERE id = #{id, jdbcType=BIGINT}
+        AND (delete_flag = 0 OR delete_flag IS NULL)
+    </select>
+
+    <!-- 根据SelectDto条件查询列表（忽略数据隔离） -->
+    <select id="selectListWithoutIsolation" parameterType="com.g2rain.cms.dto.ArticleSelectDto" resultMap="BaseResultMap">
+        SELECT
+        id,
+        create_time, update_time,
+        organ_id, space_id, category_id, source_application_id, source_trace_id, title, summary, cover, content_type, author, status, publish_time, content,
+        delete_flag,
+        version
+        FROM article
+        <where>
+            <if test="id != null">
+                AND id = #{id, jdbcType=BIGINT}
+            </if>
+            <if test="ids != null and ids.size() > 0">
+                AND id IN
+                <foreach collection="ids" item="item" open="(" separator="," close=")">
+                    #{item, jdbcType=BIGINT}
+                </foreach>
+            </if>
+            <if test="createTime != null">
+                <if test="createTime[0] != '' and (createTime.size() lt 2 or createTime[1] == '')">
+                    AND create_time >= #{createTime[0], jdbcType=TIMESTAMP}
+                </if>
+                <if test="createTime.size() >= 2 and createTime[0] == '' and createTime[1] != ''">
+                    AND create_time &lt;= #{createTime[1], jdbcType=TIMESTAMP}
+                </if>
+                <if test="createTime.size() >= 2 and createTime[0] != '' and createTime[1] != ''">
+                    AND create_time BETWEEN #{createTime[0], jdbcType=TIMESTAMP}
+                    AND #{createTime[1], jdbcType=TIMESTAMP}
+                </if>
+            </if>
+            <if test="updateTime != null">
+                <if test="updateTime[0] != '' and (updateTime.size() lt 2 or updateTime[1] == '')">
+                    AND update_time >= #{updateTime[0], jdbcType=TIMESTAMP}
+                </if>
+                <if test="updateTime.size() >= 2 and updateTime[0] == '' and updateTime[1] != ''">
+                    AND update_time &lt;= #{updateTime[1], jdbcType=TIMESTAMP}
+                </if>
+                <if test="updateTime.size() >= 2 and updateTime[0] != '' and updateTime[1] != ''">
+                    AND update_time BETWEEN #{updateTime[0], jdbcType=TIMESTAMP}
+                    AND #{updateTime[1], jdbcType=TIMESTAMP}
+                </if>
+            </if>
+            <if test="organId != null">
+                AND organ_id = #{organId, jdbcType=BIGINT}
+            </if>
+            <if test="spaceId != null">
+                AND space_id = #{spaceId, jdbcType=BIGINT}
+            </if>
+            <if test="categoryId != null">
+                AND category_id = #{categoryId, jdbcType=BIGINT}
+            </if>
+            <if test="sourceApplicationId != null">
+                AND source_application_id = #{sourceApplicationId, jdbcType=BIGINT}
+            </if>
+            <if test="sourceTraceId != null">
+                AND source_trace_id = #{sourceTraceId, jdbcType=VARCHAR}
+            </if>
+            <if test="title != null">
+                AND title = #{title, jdbcType=VARCHAR}
+            </if>
+            <if test="summary != null">
+                AND summary = #{summary, jdbcType=VARCHAR}
+            </if>
+            <if test="cover != null">
+                AND cover = #{cover, jdbcType=VARCHAR}
+            </if>
+            <if test="contentType != null">
+                AND content_type = #{contentType, jdbcType=VARCHAR}
+            </if>
+            <if test="author != null">
+                AND author = #{author, jdbcType=VARCHAR}
+            </if>
+            <if test="status != null">
+                AND status = #{status, jdbcType=VARCHAR}
+            </if>
+            <if test="publishTime != null">
+                AND publish_time = #{publishTime, jdbcType=TIMESTAMP}
+            </if>
+            <if test="content != null">
+                AND content = #{content, jdbcType=LONGVARCHAR}
+            </if>
             AND (delete_flag = 0 OR delete_flag IS NULL)
         </where>
         <include refid="dynamicOrderBy"/>

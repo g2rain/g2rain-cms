@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import com.g2rain.common.validation.Validations;
 
 /**
  * 标签表服务实现类
@@ -117,6 +118,9 @@ public class TagServiceImpl implements TagService {
 
     @Override
     public Long save(TagDto dto) {
+
+        Validations.validateSave(dto);
+
         // 转换DTO为PO
         TagPo entity = TagConverter.INSTANCE.dto2po(dto);
 

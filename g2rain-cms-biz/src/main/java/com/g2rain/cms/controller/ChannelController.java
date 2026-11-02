@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import com.g2rain.web.interceptors.annotations.IdentityInject;
 
 /**
  * 栏目表控制器
@@ -38,18 +39,21 @@ public class ChannelController implements ChannelApi {
 
     @Override
     @Operation(summary = "查询栏目列表", description = "按查询条件筛选栏目，不分页返回列表")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<List<ChannelVo>> selectList(ChannelSelectDto selectDto) {
         return Result.success(channelService.selectList(selectDto));
     }
 
     @Override
     @Operation(summary = "分页查询栏目", description = "按查询条件筛选栏目并分页，含总数与当前页数据")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<PageData<ChannelVo>> selectPage(PageSelectListDto<ChannelSelectDto> selectDto) {
         return Result.successPage(channelService.selectPage(selectDto));
     }
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新栏目", description = "根据请求体主键是否存在，新增或更新栏目信息")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<Long> save(@RequestBody ChannelDto dto) {
         return Result.success(channelService.save(dto));
     }
