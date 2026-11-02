@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Map;
 import java.util.List;
+import com.g2rain.web.interceptors.annotations.IdentityInject;
 
 /**
  * 标签表控制器
@@ -39,12 +40,14 @@ public class TagController implements TagApi {
 
     @Override
     @Operation(summary = "查询标签列表", description = "按查询条件筛选标签，不分页返回列表")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<List<TagVo>> selectList(TagSelectDto selectDto) {
         return Result.success(tagService.selectList(selectDto));
     }
 
     @Override
     @Operation(summary = "分页查询标签", description = "按查询条件筛选标签并分页，含总数与当前页数据")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<PageData<TagVo>> selectPage(PageSelectListDto<TagSelectDto> selectDto) {
         return Result.successPage(tagService.selectPage(selectDto));
     }
@@ -57,6 +60,7 @@ public class TagController implements TagApi {
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新标签", description = "根据请求体主键是否存在，新增或更新标签信息")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<Long> save(@RequestBody TagDto dto) {
         return Result.success(tagService.save(dto));
     }

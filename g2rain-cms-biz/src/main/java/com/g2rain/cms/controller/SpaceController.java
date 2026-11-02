@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import com.g2rain.web.interceptors.annotations.IdentityInject;
 
 /**
  * 内容空间表控制器
@@ -38,18 +39,21 @@ public class SpaceController implements SpaceApi {
 
     @Override
     @Operation(summary = "查询内容空间列表", description = "按查询条件筛选内容空间，不分页返回列表")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<List<SpaceVo>> selectList(SpaceSelectDto selectDto) {
         return Result.success(spaceService.selectList(selectDto));
     }
 
     @Override
     @Operation(summary = "分页查询内容空间", description = "按查询条件筛选内容空间并分页，含总数与当前页数据")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<PageData<SpaceVo>> selectPage(PageSelectListDto<SpaceSelectDto> selectDto) {
         return Result.successPage(spaceService.selectPage(selectDto));
     }
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新内容空间", description = "根据请求体主键是否存在，新增或更新内容空间信息")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<Long> save(@RequestBody SpaceDto dto) {
         return Result.success(spaceService.save(dto));
     }

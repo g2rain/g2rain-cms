@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import com.g2rain.web.interceptors.annotations.IdentityInject;
 
 /**
  * 站点表控制器
@@ -36,18 +37,21 @@ public class WebSiteController implements WebSiteApi {
 
     @Override
     @Operation(summary = "查询站点列表", description = "按查询条件筛选站点，不分页返回列表")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<List<WebSiteVo>> selectList(WebSiteSelectDto selectDto) {
         return Result.success(webSiteService.selectList(selectDto));
     }
 
     @Override
     @Operation(summary = "分页查询站点", description = "按查询条件筛选站点并分页，含总数与当前页数据")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<PageData<WebSiteVo>> selectPage(PageSelectListDto<WebSiteSelectDto> selectDto) {
         return Result.successPage(webSiteService.selectPage(selectDto));
     }
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新站点", description = "根据请求体主键是否存在，新增或更新站点信息")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<Long> save(@RequestBody WebSiteDto dto) {
         return Result.success(webSiteService.save(dto));
     }
