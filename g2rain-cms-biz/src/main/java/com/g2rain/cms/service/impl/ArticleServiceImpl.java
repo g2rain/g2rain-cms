@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import com.g2rain.common.validation.Validations;
 
 /**
  * 文章表服务实现类
@@ -66,6 +67,11 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Long save(ArticleDto dto) {
+        if (dto.getStatus() == null || dto.getStatus().isBlank()) {
+            dto.setStatus("DRAFT");
+        }
+        Validations.validateSave(dto);
+
         // 转换DTO为PO
         ArticlePo entity = ArticleConverter.INSTANCE.dto2po(dto);
 

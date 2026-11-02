@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import com.g2rain.web.interceptors.annotations.IdentityInject;
 
 /**
  * 页面表控制器
@@ -38,18 +39,21 @@ public class PageController implements PageApi {
 
     @Override
     @Operation(summary = "查询页面列表", description = "按查询条件筛选页面，不分页返回列表")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<List<PageVo>> selectList(PageSelectDto selectDto) {
         return Result.success(pageService.selectList(selectDto));
     }
 
     @Override
     @Operation(summary = "分页查询页面", description = "按查询条件筛选页面并分页，含总数与当前页数据")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<PageData<PageVo>> selectPage(PageSelectListDto<PageSelectDto> selectDto) {
         return Result.successPage(pageService.selectPage(selectDto));
     }
 
     @PostMapping("/save")
     @Operation(summary = "新增或更新页面", description = "根据请求体主键是否存在，新增或更新页面信息")
+    @IdentityInject(organIdPropertyName = "organId")
     public Result<Long> save(@RequestBody PageDto dto) {
         return Result.success(pageService.save(dto));
     }

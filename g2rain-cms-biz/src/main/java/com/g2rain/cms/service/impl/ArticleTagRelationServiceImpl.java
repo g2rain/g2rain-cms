@@ -28,6 +28,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Objects;
+import com.g2rain.common.validation.Validations;
 
 /**
  * 文章标签关系表服务实现类
@@ -72,9 +73,7 @@ public class ArticleTagRelationServiceImpl implements ArticleTagRelationService 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public int batchAddTags(ArticleTagBatchAddDto dto) {
-        if (dto == null || dto.getArticleId() == null || dto.getTagIds() == null || dto.getTagIds().isEmpty()) {
-            return 0;
-        }
+        Validations.validateDefault(dto);
 
         Long articleId = dto.getArticleId();
         Set<Long> tagIds = dto.getTagIds().stream()
@@ -116,6 +115,9 @@ public class ArticleTagRelationServiceImpl implements ArticleTagRelationService 
 
     @Override
     public Long save(ArticleTagRelationDto dto) {
+
+        Validations.validateSave(dto);
+
         // 转换DTO为PO
         ArticleTagRelationPo entity = ArticleTagRelationConverter.INSTANCE.dto2po(dto);
 

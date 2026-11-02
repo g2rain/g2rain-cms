@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
+import com.g2rain.common.validation.Validations;
 
 /**
  * 文章分类表服务实现类
@@ -67,6 +68,11 @@ public class ArticleCategoryServiceImpl implements ArticleCategoryService {
 
     @Override
     public Long save(ArticleCategoryDto dto) {
+        if (dto.getStatus() == null || dto.getStatus().isBlank()) {
+            dto.setStatus("ENABLED");
+        }
+        Validations.validateSave(dto);
+
         // 转换DTO为PO
         ArticleCategoryPo entity = ArticleCategoryConverter.INSTANCE.dto2po(dto);
 
@@ -92,9 +98,7 @@ public class ArticleCategoryServiceImpl implements ArticleCategoryService {
 
     @Override
     public int updateStatus(ArticleCategoryUpdateStatusDto dto) {
-        if (dto == null || dto.getId() == null || dto.getStatus() == null || dto.getStatus().isBlank()) {
-            throw new IllegalArgumentException("articleCategory updateStatus requires id and status");
-        }
+        Validations.validateDefault(dto);
 
         ArticleCategoryPo entity = new ArticleCategoryPo();
         entity.setId(dto.getId());

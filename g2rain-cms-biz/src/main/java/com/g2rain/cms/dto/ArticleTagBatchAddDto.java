@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * 单文章批量添加标签请求DTO
@@ -23,13 +25,15 @@ public class ArticleTagBatchAddDto {
     /**
      * 文章标识
      */
-    @Schema(description = "文章标识")
+    @NotNull
+    @Schema(description = "文章标识（必填）")
     private Long articleId;
 
     /**
      * 标签标识列表
      */
-    @Schema(description = "标签标识列表")
-    private List<Long> tagIds;
+    @NotEmpty
+    @Schema(description = "标签标识列表（必填）")
+    private List<@NotNull Long> tagIds;
 }
 

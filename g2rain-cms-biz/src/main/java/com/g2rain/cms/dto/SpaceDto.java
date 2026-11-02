@@ -6,6 +6,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import com.g2rain.common.validation.CreateGroup;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * 内容空间表查询DTO
@@ -29,24 +32,31 @@ public class SpaceDto extends BaseDto {
     /**
      * 空间名称
      */
-    @Schema(description = "空间名称")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 128)
+    @Schema(description = "空间名称（新增必填）")
     private String spaceName;
 
     /**
      * 空间编码
      */
-    @Schema(description = "空间编码")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 64)
+    @Schema(description = "空间编码（新增必填）")
     private String spaceCode;
 
     /**
      * 空间类型[WEBSITE:官网, KNOWLEDGE:知识库, INTERNAL:内部]
      */
-    @Schema(description = "空间类型[WEBSITE:官网, KNOWLEDGE:知识库, INTERNAL:内部]")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 32)
+    @Schema(description = "空间类型[WEBSITE:官网, KNOWLEDGE:知识库, INTERNAL:内部]（新增必填）")
     private String spaceType;
 
     /**
      * 状态[ENABLED:启用, DISABLED:禁用]
      */
+    @Size(max = 32)
     @Schema(description = "状态[ENABLED:启用, DISABLED:禁用]")
     private String status;
 }

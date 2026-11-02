@@ -9,6 +9,10 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.time.LocalDate;
+import com.g2rain.common.validation.CreateGroup;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 /**
  * 文章表查询DTO
@@ -32,13 +36,15 @@ public class ArticleDto extends BaseDto {
     /**
      * 空间标识
      */
-    @Schema(description = "空间标识")
+    @NotNull(groups = CreateGroup.class)
+    @Schema(description = "空间标识（新增必填）")
     private Long spaceId;
 
     /**
      * 分类标识
      */
-    @Schema(description = "分类标识")
+    @NotNull(groups = CreateGroup.class)
+    @Schema(description = "分类标识（新增必填）")
     private Long categoryId;
 
     /**
@@ -50,42 +56,51 @@ public class ArticleDto extends BaseDto {
     /**
      * 来源追踪ID
      */
+    @Size(max = 128)
     @Schema(description = "来源追踪ID")
     private String sourceTraceId;
 
     /**
      * 标题
      */
-    @Schema(description = "标题")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 255)
+    @Schema(description = "标题（新增必填）")
     private String title;
 
     /**
      * 摘要
      */
+    @Size(max = 512)
     @Schema(description = "摘要")
     private String summary;
 
     /**
      * 封面
      */
+    @Size(max = 255)
     @Schema(description = "封面")
     private String cover;
 
     /**
      * 内容类型[MARKDOWN:Markdown, HTML:HTML]
      */
-    @Schema(description = "内容类型[MARKDOWN:Markdown, HTML:HTML]")
+    @NotBlank(groups = CreateGroup.class)
+    @Size(max = 32)
+    @Schema(description = "内容类型[MARKDOWN:Markdown, HTML:HTML]（新增必填）")
     private String contentType;
 
     /**
      * 作者
      */
+    @Size(max = 128)
     @Schema(description = "作者")
     private String author;
 
     /**
      * 状态[DRAFT:草稿, PUBLISHED:发布]
      */
+    @Size(max = 32)
     @Schema(description = "状态[DRAFT:草稿, PUBLISHED:发布]")
     private String status;
 
