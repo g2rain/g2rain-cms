@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.g2rain</groupId>
         <artifactId>g2rain-cms</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
 
@@ -66,13 +66,19 @@
                         <image>docker://eclipse-temurin:25.0.4.1_1-jre</image>
                     </from>
                     <to>
-                        <image>g2rain/g2rain-cms:${project.version}</image>
+                        <image>ghcr.io/g2rain/g2rain-cms:${project.version}</image>
                     </to>
                     <container>
                         <mainClass>com.g2rain.Application</mainClass>
                         <ports>
                             <port>8080</port>
                         </ports>
+                        <labels>
+                            <org.opencontainers.image.source>https://github.com/g2rain/g2rain-cms</org.opencontainers.image.source>
+                            <org.opencontainers.image.licenses>Apache-2.0</org.opencontainers.image.licenses>
+                            <org.opencontainers.image.title>g2rain-cms</org.opencontainers.image.title>
+                            <org.opencontainers.image.version>${project.version}</org.opencontainers.image.version>
+                        </labels>
                     </container>
                 </configuration>
             </plugin>

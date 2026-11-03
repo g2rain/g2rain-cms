@@ -6,15 +6,15 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Java](https://img.shields.io/badge/Java-25-437291?logo=openjdk&logoColor=white)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.0.5-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
-[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.1-586069?logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-4.1.2-6DB33F?logo=springboot&logoColor=white)](https://spring.io/projects/spring-boot)
+[![Spring Cloud](https://img.shields.io/badge/Spring%20Cloud-2025.1.4-586069?logo=spring&logoColor=white)](https://spring.io/projects/spring-cloud)
 [![Maven](https://img.shields.io/badge/build-Maven-C71A36?logo=apachemaven&logoColor=white)](https://maven.apache.org/)
 
-> 下一代AI软件开发范式，AI原生Agent平台，开源的企业级SaaS底座。
+G2rain（谷雨）是面向企业的开源智能体平台，连接模型、知识与业务工具，以 SaaS 基座和应用开发工具链支撑智能应用落地。智能体平台已开源，具体组件、版本与接入方式以各责任仓库的说明为准。`g2rain-cms` 是其中的 CMS 内容管理领域服务，不代表或替代整个平台能力。
 
 CMS 内容管理领域服务，拥有站点、内容空间、栏目、页面、文章、分类、标签及文章标签关系数据，并以 API/Biz/Startup 三模块交付查询、写入、状态变化和持久化能力。
 
-[项目文档](docs/index.md) · [官网](https://www.g2rain.com) · [Issues](https://github.com/g2rain/g2rain/issues) · [Discussions](https://github.com/g2rain/g2rain/discussions)
+[项目文档](docs/index.md) · [中央架构 Profile](https://github.com/g2rain/g2rain/tree/architecture-v1.0.0/docs/architecture/profiles/java-domain-service) · [官网](https://www.g2rain.com) · [Issues](https://github.com/g2rain/g2rain/issues) · [Discussions](https://github.com/g2rain/g2rain/discussions)
 
 ## 目录
 
@@ -104,7 +104,7 @@ flowchart TD
 
 | 类别 | 说明 |
 | --- | --- |
-| 运行时 | Java 25、Spring Boot 4.0.5、Spring Cloud 2025.1.1 |
+| 运行时 | Java 25、Spring Boot 4.1.2、Spring Cloud 2025.1.4 |
 | 安全与令牌 | g2rain-starter-aegis-core |
 | 数据与发现 | MySQL、MyBatis、Redis、Nacos |
 | 平台基础 | g2rain-common、Aegis Core、MyBatis Extensions、SpringDoc |
@@ -128,7 +128,13 @@ flowchart TD
 | 验证项目 | `mvn clean verify` | 编译并打包所有模块；当前没有自动化测试。 |
 | 本地启动 | `mvn -pl g2rain-cms-startup -am spring-boot:run` | 从根目录构建依赖并启动 Startup，默认端口 8080、Profile 为 `dev`。 |
 
-版本号以项目构建配置为准，当前识别为 `1.0-SNAPSHOT`。
+版本号以根 `pom.xml` 的 `<version>` 为准，当前为 `1.0.0`。
+
+健康检查入口：
+
+```text
+GET /actuator/health
+```
 
 ## 配置说明
 
@@ -149,9 +155,30 @@ flowchart TD
 | 目标 | 命令 | 产物 | 说明 |
 | --- | --- | --- | --- |
 | 完整验证 | `mvn clean verify` | 三个模块 JAR、sources 与 Javadoc | 构建整个 Reactor；当前实际测试数为 0。 |
-| 可执行 Jar | `mvn clean package` | `g2rain-cms-startup/target/g2rain-cms-startup-1.0-SNAPSHOT.jar` | 由 Startup 模块生成 Spring Boot 可执行 JAR。 |
+| 可执行 Jar | `mvn clean package` | `g2rain-cms-startup/target/g2rain-cms-startup-1.0.0.jar` | 由 Startup 模块生成 Spring Boot 可执行 JAR。 |
 | 本地运行 | `mvn -pl g2rain-cms-startup -am spring-boot:run` | 本地 Spring Boot 进程 | 从根目录启动，并构建 API/Biz 依赖。 |
-| 本地镜像 | `./build.sh <tag>` | `g2rain/g2rain-cms:<tag>` | 先跳过测试安装 Reactor，再通过 Jib 执行 `dockerBuild`。 |
+| 本地镜像 | `./build.sh 1.0.0 local` | `ghcr.io/g2rain/g2rain-cms:1.0.0`（本地 Docker daemon） | 先完整验证并安装 Reactor，再由 Jib 使用 GHCR 同一镜像配置执行 `dockerBuild`。 |
+
+## GHCR 镜像
+
+- 镜像地址：`ghcr.io/g2rain/g2rain-cms`。
+- 稳定版 tag 使用项目版本（例如 `1.0.0`）；同一镜像还推送不可变的 `sha-<完整提交 SHA>` tag；不发布 `latest`。
+- 拉取示例：`docker pull ghcr.io/g2rain/g2rain-cms:1.0.0`。
+- 仅当推送精确 `v<major>.<minor>.<patch>` Git tag，且其提交已进入 `main`、包含同名发布说明并与 Maven 项目版本一致时，GitHub Actions 才构建、测试并推送。分支、PR 与手动触发均不会发布。
+- 镜像发布的权限设置、公开访问和生产部署前检查见[部署文档](docs/operations/deployment.md)。
+
+## 项目文档
+
+| 场景 | 入口 |
+| --- | --- |
+| 文档首页 | [docs/index.md](docs/index.md) |
+| 架构总览与模块边界 | [架构总览](docs/architecture/overview.md) · [模块职责](docs/architecture/modules.md) · [依赖与协作](docs/architecture/dependencies.md) |
+| 中央基线与已知差异 | [Java Domain Service 1.0.0](https://github.com/g2rain/g2rain/tree/architecture-v1.0.0/docs/architecture/profiles/java-domain-service) · [已知偏差](docs/architecture/deviations.md) |
+| 本地开发、规范与测试 | [本地开发](docs/development/local-development.md) · [代码约定](docs/development/code-conventions.md) · [测试策略](docs/development/testing.md) |
+| API、数据库与代码生成 | [API 约定](docs/development/api-conventions.md) · [数据库约定](docs/development/database-conventions.md) · [代码生成](docs/development/code-generation.md) |
+| 发布记录 | [发布索引](docs/releases/README.md) |
+| 配置、安全、镜像与部署 | [配置](docs/operations/configuration.md) · [安全边界](docs/security/security-boundaries.md) · [部署](docs/operations/deployment.md) |
+| 需求、决策与社区 | [需求索引](docs/requirements/README.md) · [项目决策](docs/decisions/README.md) · [社区协作](docs/community.md) |
 
 ## 代码质量与测试
 

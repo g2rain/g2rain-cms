@@ -4,8 +4,8 @@ family: business-service
 role: CMS 内容管理领域服务
 language: Java
 buildTool: Maven
-version: 1.0-SNAPSHOT
-releaseRevision: 1.0.5
+version: 1.0.0
+releaseRevision: 1.0.0
 license: Apache-2.0
 
 architectureBaseline:
