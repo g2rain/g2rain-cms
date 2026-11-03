@@ -1,0 +1,82 @@
+name: Publish CMS API to GitHub Maven Packages
+
+on:
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+  packages: write
+
+concurrency:
+  group: cms-maven-api-publication
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
+    steps:
+      - name: Check out selected commit
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up JDK 25 and Maven cache
+        uses: actions/setup-java@dded0888837ed1f317902acf8a20df0ad188d165 # v5.0.0
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+          server-id: github
+      - name: Require a commit in main
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --no-tags origin main
+          git merge-base --is-ancestor HEAD origin/main || {
+            echo 'Selected commit must be in origin/main history.' >&2
+            exit 1
+          }
+      - name: Configure GitHub Maven repositories and deploy server
+        shell: bash
+        run: |
+          set -euo pipefail
+          settings_path="${RUNNER_TEMP}/g2rain-cms-settings.xml"
+          python3 - "$settings_path" <<'PY'
+          import sys
+          import xml.etree.ElementTree as ET
+          ns = 'http://maven.apache.org/SETTINGS/1.0.0'
+          ET.register_namespace('', ns)
+          def element(parent, name, value=None):
+              child = ET.SubElement(parent, f'{{{ns}}}{name}')
+              child.text = value
+              return child
+          root = ET.Element(f'{{{ns}}}settings')
+          servers = element(root, 'servers')
+          for server_id in ('g2rain-common', 'github'):
+              server = element(servers, 'server')
+              element(server, 'id', server_id)
+              element(server, 'username', '${env.GITHUB_ACTOR}')
+              element(server, 'password', '${env.GITHUB_TOKEN}')
+          profile = element(element(root, 'profiles'), 'profile')
+          element(profile, 'id', 'g2rain-packages')
+          repository = element(element(profile, 'repositories'), 'repository')
+          element(repository, 'id', 'g2rain-common')
+          element(repository, 'url', 'https://maven.pkg.github.com/g2rain/g2rain-common')
+          element(element(repository, 'releases'), 'enabled', 'true')
+          element(element(repository, 'snapshots'), 'enabled', 'false')
+          element(element(root, 'activeProfiles'), 'activeProfile', 'g2rain-packages')
+          ET.ElementTree(root).write(sys.argv[1], encoding='utf-8', xml_declaration=True)
+          PY
+          chmod 600 "$settings_path"
+          echo "MAVEN_SETTINGS=$settings_path" >> "$GITHUB_ENV"
+          echo 'Maven repository g2rain-common: https://maven.pkg.github.com/g2rain/g2rain-common; deploy server: github'
+      - name: Build, test, and publish parent POM and CMS API
+        shell: bash
+        run: |
+          set -euo pipefail
+          mvn --settings "$MAVEN_SETTINGS" --batch-mode --no-transfer-progress -U \
+            -pl g2rain-cms-api -am clean deploy \
+            -DaltDeploymentRepository=github::https://maven.pkg.github.com/g2rain/g2rain-cms

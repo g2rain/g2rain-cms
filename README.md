@@ -167,6 +167,8 @@ GET /actuator/health
 - 仅当推送精确 `v<major>.<minor>.<patch>` Git tag，且其提交已进入 `main`、包含同名发布说明并与 Maven 项目版本一致时，GitHub Actions 才构建、测试并推送。分支、PR 与手动触发均不会发布。
 - 镜像发布的权限设置、公开访问和生产部署前检查见[部署文档](docs/operations/deployment.md)。
 
+镜像发布成功后调用 Maven API 工作流，向 `https://maven.pkg.github.com/g2rain/g2rain-cms` 上传 `com.g2rain:g2rain-cms-api:1.0.0` 和父 POM `com.g2rain:g2rain-cms:1.0.0`。Maven 工作流也支持手动运行，详见[部署文档](docs/operations/deployment.md)。
+
 ## 项目文档
 
 | 场景 | 入口 |
