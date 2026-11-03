@@ -18,6 +18,8 @@ jobs:
     name: Build, test, and publish
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      GITHUB_TOKEN: ${{ github.token }}
     steps:
       # actions/checkout v5.0.0
       - name: Check out the tagged commit
@@ -33,6 +35,40 @@ jobs:
           distribution: temurin
           java-version: '25'
           cache: maven
+
+      - name: Configure GitHub Maven dependency repository
+        shell: bash
+        run: |
+          set -euo pipefail
+          settings_path="${RUNNER_TEMP}/g2rain-cms-settings.xml"
+          python3 - "$settings_path" <<'PY'
+          import sys
+          import xml.etree.ElementTree as ET
+          ns = 'http://maven.apache.org/SETTINGS/1.0.0'
+          ET.register_namespace('', ns)
+          def element(parent, name, value=None):
+              child = ET.SubElement(parent, f'{{{ns}}}{name}')
+              child.text = value
+              return child
+          root = ET.Element(f'{{{ns}}}settings')
+          servers = element(root, 'servers')
+          server = element(servers, 'server')
+          element(server, 'id', 'g2rain-common')
+          element(server, 'username', '${env.GITHUB_ACTOR}')
+          element(server, 'password', '${env.GITHUB_TOKEN}')
+          profile = element(element(root, 'profiles'), 'profile')
+          element(profile, 'id', 'g2rain-packages')
+          repository = element(element(profile, 'repositories'), 'repository')
+          element(repository, 'id', 'g2rain-common')
+          element(repository, 'url', 'https://maven.pkg.github.com/g2rain/g2rain-common')
+          element(element(repository, 'releases'), 'enabled', 'true')
+          element(element(repository, 'snapshots'), 'enabled', 'false')
+          element(element(root, 'activeProfiles'), 'activeProfile', 'g2rain-packages')
+          ET.ElementTree(root).write(sys.argv[1], encoding='utf-8', xml_declaration=True)
+          PY
+          chmod 600 "$settings_path"
+          echo "MAVEN_SETTINGS=$settings_path" >> "$GITHUB_ENV"
+          echo 'Maven repository g2rain-common: https://maven.pkg.github.com/g2rain/g2rain-common'
 
       - name: Validate release tag, branch membership, release notes, and version
         id: release
@@ -61,7 +97,7 @@ jobs:
             exit 1
           fi
 
-          version="$(mvn --batch-mode --no-transfer-progress -q -DforceStdout help:evaluate -Dexpression=project.version | tail -n 1)"
+          version="$(mvn --settings "$MAVEN_SETTINGS" --batch-mode --no-transfer-progress -q -DforceStdout help:evaluate -Dexpression=project.version)"
           if [[ "v${version}" != "${tag}" ]]; then
             echo "Tag '${tag}' does not match Maven project version '${version}'." >&2
             exit 1
@@ -71,7 +107,7 @@ jobs:
           echo "commit=${tag_commit}" >> "${GITHUB_OUTPUT}"
 
       - name: Build and test all modules
-        run: mvn --batch-mode --no-transfer-progress clean verify
+        run: mvn --settings "$MAVEN_SETTINGS" --batch-mode --no-transfer-progress -U clean install
 
       - name: Log in to GHCR
         env:
@@ -80,11 +116,17 @@ jobs:
         run: printf '%s' "$GHCR_TOKEN" | docker login ghcr.io -u "$GITHUB_ACTOR" --password-stdin
 
       - name: Build and push both immutable image tags with Jib
+        working-directory: g2rain-cms-startup
         env:
-          APP_IMAGE: ghcr.io/g2rain/g2rain-cms
-          EXTRA_TAGS: sha-${{ steps.release.outputs.commit }}
+          IMAGE_NAME: ghcr.io/g2rain/g2rain-cms
+          IMAGE_TAG: ${{ steps.release.outputs.version }}
+          SHA_TAG: sha-${{ steps.release.outputs.commit }}
         shell: bash
-        run: ./build.sh "${{ steps.release.outputs.version }}" push
+        run: |
+          set -euo pipefail
+          mvn --settings "$MAVEN_SETTINGS" --batch-mode --no-transfer-progress -DskipTests=true compile jib:build \
+            "-Djib.to.image=$IMAGE_NAME:$IMAGE_TAG" \
+            "-Djib.to.tags=$SHA_TAG"
 
       - name: Report completed publication
         if: success()
@@ -93,11 +135,18 @@ jobs:
           {
             echo '## GHCR publication complete'
             echo
-            echo '- Image: `ghcr.io/g2rain/g2rain-cms`'
-            echo '- Tags: `${{ steps.release.outputs.version }}`, `sha-${{ steps.release.outputs.commit }}`'
+            echo '- `ghcr.io/g2rain/g2rain-cms:${{ steps.release.outputs.version }}`'
+            echo '- `ghcr.io/g2rain/g2rain-cms:sha-${{ steps.release.outputs.commit }}`'
           } >> "${GITHUB_STEP_SUMMARY}"
 
       - name: Log out of GHCR
         if: always()
         shell: bash
         run: docker logout ghcr.io
+
+  publish-maven:
+    needs: publish
+    uses: ./.github/workflows/publish-maven.yml
+    permissions:
+      contents: read
+      packages: write

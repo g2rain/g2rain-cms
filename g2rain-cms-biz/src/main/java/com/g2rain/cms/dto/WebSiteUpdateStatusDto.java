@@ -25,10 +25,10 @@ public class WebSiteUpdateStatusDto {
     private Long id;
 
     /**
-     * 状态[ACTIVE:启用, INACTIVE:禁用]
+     * 状态[ENABLED:启用, DISABLED:禁用]
      */
     @NotBlank
     @Size(max = 32)
-    @Schema(description = "状态[ACTIVE:启用, INACTIVE:禁用]（必填）")
+    @Schema(description = "状态[ENABLED:启用, DISABLED:禁用]（必填）")
     private String status;
 }

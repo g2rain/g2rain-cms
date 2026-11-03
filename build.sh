@@ -25,11 +25,6 @@ case "$MODE" in
     ;;
 esac
 
-JIB_TAG_ARGS=()
-if [[ -n "${EXTRA_TAGS:-}" ]]; then
-  JIB_TAG_ARGS+=("-Djib.to.tags=${EXTRA_TAGS}")
-fi
-
 echo "Building Docker image: ${APP_IMAGE}:${TAG}"
 
 # 先在根目录完整构建、测试并安装整个项目（包括所有子模块），以便子模块复用相同产物构建镜像。
@@ -39,7 +34,13 @@ mvn --batch-mode --no-transfer-progress clean install
 # 然后进入 startup 子模块，执行 Jib 构建
 cd g2rain-cms-startup
 
-mvn --batch-mode --no-transfer-progress -DskipTests=true \
-  compile "$JIB_GOAL" \
-  "-Djib.to.image=${APP_IMAGE}:${TAG}" \
-  "${JIB_TAG_ARGS[@]}"
+if [[ -n "${EXTRA_TAGS:-}" ]]; then
+  mvn --batch-mode --no-transfer-progress -DskipTests=true \
+    compile "$JIB_GOAL" \
+    "-Djib.to.image=${APP_IMAGE}:${TAG}" \
+    "-Djib.to.tags=${EXTRA_TAGS}"
+else
+  mvn --batch-mode --no-transfer-progress -DskipTests=true \
+    compile "$JIB_GOAL" \
+    "-Djib.to.image=${APP_IMAGE}:${TAG}"
+fi
