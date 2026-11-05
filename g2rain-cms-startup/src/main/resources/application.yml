@@ -59,6 +59,7 @@ logging:
   level:
     com.g2rain.cms.dao: DEBUG
 
+# g2rain-starter-spring-doc 已经实现, 但是未发版, 暂自行配置
 springdoc:
   default-flat-param-object: true
 
