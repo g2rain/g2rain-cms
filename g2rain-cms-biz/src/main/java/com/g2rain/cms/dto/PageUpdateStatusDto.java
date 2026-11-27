@@ -21,7 +21,7 @@ public class PageUpdateStatusDto {
      * 主键ID
      */
     @NotNull
-    @Schema(description = "主键ID（必填）")
+    @Schema(description = "主键ID")
     private Long id;
 
     /**
@@ -29,6 +29,6 @@ public class PageUpdateStatusDto {
      */
     @NotBlank
     @Size(max = 32)
-    @Schema(description = "状态[DRAFT:草稿, PUBLISHED:发布]（必填）")
+    @Schema(description = "状态[DRAFT:草稿, PUBLISHED:发布]")
     private String status;
 }

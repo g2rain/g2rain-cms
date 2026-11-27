@@ -6,6 +6,7 @@ import com.g2rain.common.model.Result;
 import com.g2rain.cms.api.ArticleApi;
 import com.g2rain.cms.dto.ArticleDto;
 import com.g2rain.cms.dto.ArticleSelectDto;
+import com.g2rain.cms.dto.ArticleUpdateStatusDto;
 import com.g2rain.cms.service.ArticleService;
 import com.g2rain.cms.vo.ArticleVo;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,6 +52,12 @@ public class ArticleController implements ArticleApi {
     @IdentityInject(organIdPropertyName = "organId")
     public Result<Long> save(@RequestBody ArticleDto dto) {
         return Result.success(articleService.save(dto));
+    }
+
+    @PostMapping("/update_status")
+    @Operation(summary = "文章状态变更")
+    public Result<Integer> updateStatus(@RequestBody ArticleUpdateStatusDto dto) {
+        return Result.success(articleService.updateStatus(dto));
     }
 
     @DeleteMapping("/{id}")

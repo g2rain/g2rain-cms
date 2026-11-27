@@ -6,11 +6,13 @@ import com.g2rain.common.model.PageData;
 import com.g2rain.common.model.PageSelectListDto;
 import com.g2rain.common.utils.Asserts;
 import com.g2rain.common.utils.Moments;
+import com.g2rain.common.utils.Strings;
 import com.g2rain.cms.converter.ArticleConverter;
 import com.g2rain.cms.dao.ArticleDao;
 import com.g2rain.cms.dao.po.ArticlePo;
 import com.g2rain.cms.dto.ArticleDto;
 import com.g2rain.cms.dto.ArticleSelectDto;
+import com.g2rain.cms.dto.ArticleUpdateStatusDto;
 import com.g2rain.cms.service.ArticleService;
 import com.g2rain.cms.vo.ArticleVo;
 import com.g2rain.mybatis.pagination.PageContext;
@@ -33,6 +35,11 @@ import com.g2rain.common.validation.Validations;
  */
 @Service(value = "articleServiceImpl")
 public class ArticleServiceImpl implements ArticleService {
+
+    /**
+     * 新建文章的缺省状态：草稿
+     */
+    private static final String DRAFT = "DRAFT";
 
     @Resource(name = "articleDao")
     private ArticleDao articleDao;
@@ -67,9 +74,6 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public Long save(ArticleDto dto) {
-        if (dto.getStatus() == null || dto.getStatus().isBlank()) {
-            dto.setStatus("DRAFT");
-        }
         Validations.validateSave(dto);
 
         // 转换DTO为PO
@@ -78,8 +82,11 @@ public class ArticleServiceImpl implements ArticleService {
         // 判断是新增还是更新
         Long id = entity.getId();
         if (Objects.isNull(id) || id == 0) {
-            // 新增：使用IdGenerator生成主键
+            // 新增：使用IdGenerator生成主键；未指定状态时为草稿
             entity.setId(idGenerator.generateId());
+            if (Strings.isBlank(entity.getStatus())) {
+                entity.setStatus(DRAFT);
+            }
             LocalDateTime now = Moments.now();
             entity.setUpdateTime(now);
             entity.setCreateTime(now);
@@ -93,6 +100,19 @@ public class ArticleServiceImpl implements ArticleService {
         }
 
         return entity.getId();
+    }
+
+    @Override
+    public int updateStatus(ArticleUpdateStatusDto dto) {
+        Validations.validateDefault(dto);
+
+        ArticlePo entity = new ArticlePo();
+        entity.setId(dto.getId());
+        entity.setStatus(dto.getStatus());
+        entity.setUpdateTime(Moments.now());
+        int success = articleDao.update(entity);
+        Asserts.greaterThan(success, 0, SystemErrorCode.UPDATE_DATA_ERROR, dto.getId());
+        return success;
     }
 
     @Override

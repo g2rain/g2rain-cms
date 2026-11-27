@@ -4,6 +4,7 @@ import com.g2rain.common.model.PageData;
 import com.g2rain.common.model.PageSelectListDto;
 import com.g2rain.cms.dto.ArticleDto;
 import com.g2rain.cms.dto.ArticleSelectDto;
+import com.g2rain.cms.dto.ArticleUpdateStatusDto;
 import com.g2rain.cms.vo.ArticleVo;
 
 import java.util.List;
@@ -39,6 +40,14 @@ public interface ArticleService {
      * @return 操作结果（影响行数）
      */
     Long save(ArticleDto dto);
+
+    /**
+     * 状态变更
+     *
+     * @param dto 主键与目标状态
+     * @return 影响行数
+     */
+    int updateStatus(ArticleUpdateStatusDto dto);
 
     /**
      * 根据ID删除数据

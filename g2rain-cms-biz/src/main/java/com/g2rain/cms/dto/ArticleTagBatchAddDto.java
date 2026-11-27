@@ -26,14 +26,14 @@ public class ArticleTagBatchAddDto {
      * 文章标识
      */
     @NotNull
-    @Schema(description = "文章标识（必填）")
+    @Schema(description = "文章标识")
     private Long articleId;
 
     /**
      * 标签标识列表
      */
     @NotEmpty
-    @Schema(description = "标签标识列表（必填）")
+    @Schema(description = "标签标识列表")
     private List<@NotNull Long> tagIds;
 }
 

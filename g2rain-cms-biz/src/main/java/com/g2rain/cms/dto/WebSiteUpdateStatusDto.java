@@ -21,7 +21,7 @@ public class WebSiteUpdateStatusDto {
      * 主键ID
      */
     @NotNull
-    @Schema(description = "主键ID（必填）")
+    @Schema(description = "主键ID")
     private Long id;
 
     /**
@@ -29,6 +29,6 @@ public class WebSiteUpdateStatusDto {
      */
     @NotBlank
     @Size(max = 32)
-    @Schema(description = "状态[ENABLED:启用, DISABLED:禁用]（必填）")
+    @Schema(description = "状态[ENABLED:启用, DISABLED:禁用]")
     private String status;
 }
